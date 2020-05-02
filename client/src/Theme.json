@@ -1,0 +1,49 @@
+{
+  "colors": {
+    "primary": "rgba(51,122,183,1)",
+    "primaryLight": "rgba(120,160,200,1)",
+    "secondary": "#2c2346",
+    "grey0": "rgba(66, 66, 66, 1)",
+    "grey1": "rgba(100, 100, 100, 1)",
+    "grey2": "rgba(133, 133, 133, 1)",
+    "grey3": "rgba(166, 166, 166, 1)",
+    "grey4": "rgba(200, 200, 200, 1)",
+    "grey5": "rgba(245, 245, 245, 1)",
+    "grey6": "rgba(100, 100, 100, 0.4)",
+    "greyOutline": "grey1",
+    "error": "rgba(207, 42, 42, 1)",
+    "success": "rgba(52, 186, 69, 1)",
+    "divider": "rgba(133, 133, 133, 1)"
+  },
+  "Button": {
+    "containerStyle": {
+      "marginBottom": 8
+    }
+  },
+  "Avatar": {
+    "rounded": true
+  },
+  "Icon": {
+    "type": "material-community"
+  },
+  "Input": {
+    "containerStyle": {
+      "marginBottom": 12,
+      "maxWidth": 500
+    },
+    "leftIconContainerStyle": {
+      "marginRight": 12
+    }
+  },
+  "ButtonGroup": {
+    "containerStyle": { "marginBottom": 16, "height": 40 }
+  },
+  "Overlay": {
+    "overlayStyle": {
+      "marginHorizontal": 12,
+      "paddingHorizontal": 20,
+      "borderRadius": 12,
+      "paddingVertical": 16
+    }
+  }
+}
