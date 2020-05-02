@@ -97,7 +97,7 @@ io.on("connection", async function (socket) {
 });
 
 if (process.env.NODE_ENV === "production") {
-  app.use(express.static("web-build"));
+  app.use(express.static("client/web-build"));
 }
 
 server.listen(port, () => {
