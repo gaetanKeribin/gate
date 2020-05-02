@@ -5,14 +5,14 @@ import { View, ScrollView, Text, TouchableOpacity } from "react-native";
 import {
   updateUser,
   deleteAccount,
-  updateUserPassword
+  updateUserPassword,
 } from "../../actions/authActions";
 
 const ProfileEditScreen = ({
   updateUser,
   deleteAccount,
   auth,
-  updateUserPassword
+  updateUserPassword,
 }) => {
   const { theme } = useContext(ThemeContext);
   const [desc, setDesc] = useState(auth.user.description);
@@ -20,6 +20,10 @@ const ProfileEditScreen = ({
   const [jobTitle, setJobTitle] = useState(auth.user.jobTitle);
   const [organisation, setOrganisation] = useState(auth.user.organisation);
   const [promo, setPromo] = useState(`${auth.user.promo}`);
+  const [student, setStudent] = useState(auth.user.student);
+  const [alumni, setAlumni] = useState(auth.user.alumni);
+  const [professor, setProfessor] = useState(auth.user.professor);
+  const [governance, setGovernance] = useState(auth.user.governance);
   const [password, setPassword] = useState("");
   const [confirmation, setConfirmation] = useState("");
   const [passwordError, setPasswordError] = useState("");
@@ -35,7 +39,7 @@ const ProfileEditScreen = ({
       email,
       jobTitle,
       organisation,
-      promo
+      promo,
     });
   };
 
@@ -57,14 +61,14 @@ const ProfileEditScreen = ({
         alignContent: "space-between",
         paddingVertical: 8,
         paddingHorizontal: 8,
-        backgroundColor: "white"
+        backgroundColor: "white",
       }}
     >
       <ScrollView>
         <View
           style={{
             borderBottomColor: theme.colors.grey4,
-            borderBottomWidth: 1
+            borderBottomWidth: 1,
           }}
         >
           <TouchableOpacity
@@ -73,7 +77,7 @@ const ProfileEditScreen = ({
               paddingHorizontal: 12,
               flexDirection: "row",
               justifyContent: "space-between",
-              alignContent: "center"
+              alignContent: "center",
             }}
             onPress={() => setShowEditAccountInfoForm(!showEditAccountInfoForm)}
           >
@@ -84,21 +88,123 @@ const ProfileEditScreen = ({
           </TouchableOpacity>
           {showEditAccountInfoForm && (
             <View style={{ marginBottom: 12 }}>
-              <Input
-                label="Promotion"
-                value={promo}
-                onChangeText={text => setPromo(text)}
-                leftIcon={<Icon name="school" />}
-              />
+              <View
+                style={{
+                  marginBottom: 12,
+                  flexDirection: "row",
+                  display: "flex",
+                  height: 40,
+                }}
+              >
+                <Text
+                  style={{
+                    color: theme.colors.grey3,
+                    fontWeight: "bold",
+                    paddingLeft: 10,
+                    fontSize: 16,
+                    flex: 1,
+                    textAlignVertical: "center",
+                  }}
+                >
+                  Etudiant
+                </Text>
+                <Switch
+                  value={asap}
+                  onValueChange={(value) => setAsap(value)}
+                />
+              </View>
+              <View
+                style={{
+                  marginBottom: 12,
+                  flexDirection: "row",
+                  display: "flex",
+                  height: 40,
+                }}
+              >
+                <Text
+                  style={{
+                    color: theme.colors.grey3,
+                    fontWeight: "bold",
+                    paddingLeft: 10,
+                    fontSize: 16,
+                    flex: 1,
+                    textAlignVertical: "center",
+                  }}
+                >
+                  Alumni
+                </Text>
+                <Switch
+                  value={asap}
+                  onValueChange={(value) => setAsap(value)}
+                />
+              </View>
+              <View
+                style={{
+                  marginBottom: 12,
+                  flexDirection: "row",
+                  display: "flex",
+                  height: 40,
+                }}
+              >
+                <Text
+                  style={{
+                    color: theme.colors.grey3,
+                    fontWeight: "bold",
+                    paddingLeft: 10,
+                    fontSize: 16,
+                    flex: 1,
+                    textAlignVertical: "center",
+                  }}
+                >
+                  Membre du corps professoral
+                </Text>
+                <Switch
+                  value={asap}
+                  onValueChange={(value) => setAsap(value)}
+                />
+              </View>
+              <View
+                style={{
+                  marginBottom: 12,
+                  flexDirection: "row",
+                  display: "flex",
+                  height: 40,
+                }}
+              >
+                <Text
+                  style={{
+                    color: theme.colors.grey3,
+                    fontWeight: "bold",
+                    paddingLeft: 10,
+                    fontSize: 16,
+                    flex: 1,
+                    textAlignVertical: "center",
+                  }}
+                >
+                  Membre du corps administratif
+                </Text>
+                <Switch
+                  value={asap}
+                  onValueChange={(value) => setAsap(value)}
+                />
+              </View>
+              {(student || alumni) && (
+                <Input
+                  label="Promotion"
+                  value={promo}
+                  onChangeText={(text) => setPromo(text)}
+                  leftIcon={<Icon name="school" />}
+                />
+              )}
               <Input
                 value={organisation}
                 label="Organisation"
-                onChangeText={text => setOrganisation(text)}
+                onChangeText={(text) => setOrganisation(text)}
                 leftIcon={<Icon name="domain" />}
               />
               <Input
                 value={jobTitle}
-                onChangeText={text => setJobTitle(text)}
+                onChangeText={(text) => setJobTitle(text)}
                 label="Profession"
                 leftIcon={<Icon name="briefcase" />}
               />
@@ -107,13 +213,13 @@ const ProfileEditScreen = ({
                 value={desc}
                 multiline
                 numberOfLines={8}
-                onChangeText={text => setDesc(text)}
+                onChangeText={(text) => setDesc(text)}
               />
               <Input
                 label="email"
                 value={email}
                 leftIcon={<Icon name="email" />}
-                onChangeText={text => setEmail(text)}
+                onChangeText={(text) => setEmail(text)}
               />
               <Button
                 title="Valider les changements"
@@ -126,7 +232,7 @@ const ProfileEditScreen = ({
         <View
           style={{
             borderBottomColor: theme.colors.grey4,
-            borderBottomWidth: 1
+            borderBottomWidth: 1,
           }}
         >
           <TouchableOpacity
@@ -134,7 +240,7 @@ const ProfileEditScreen = ({
               paddingVertical: 12,
               paddingHorizontal: 12,
               flexDirection: "row",
-              justifyContent: "space-between"
+              justifyContent: "space-between",
             }}
             onPress={() => setShowEditPasswordForm(!showEditPasswordForm)}
           >
@@ -153,7 +259,7 @@ const ProfileEditScreen = ({
                 value={password}
                 leftIconContainerStyle={{ marginRight: 12 }}
                 containerStyle={{ marginBottom: 20, marginTop: 8 }}
-                onChangeText={value => setPassword(value)}
+                onChangeText={(value) => setPassword(value)}
               />
               <Input
                 placeholder="Mot de passe"
@@ -163,7 +269,7 @@ const ProfileEditScreen = ({
                 value={newPassword}
                 leftIconContainerStyle={{ marginRight: 12 }}
                 containerStyle={{ marginBottom: 20, marginTop: 8 }}
-                onChangeText={value => {
+                onChangeText={(value) => {
                   setPasswordError("");
                   setNewPassword(value);
                 }}
@@ -182,7 +288,7 @@ const ProfileEditScreen = ({
                 value={confirmation}
                 leftIconContainerStyle={{ marginRight: 12 }}
                 containerStyle={{ marginBottom: 40, marginTop: 8 }}
-                onChangeText={value => setConfirmation(value)}
+                onChangeText={(value) => setConfirmation(value)}
               />
               <Button
                 title="Valider"
@@ -199,7 +305,7 @@ const ProfileEditScreen = ({
               paddingVertical: 12,
               paddingHorizontal: 12,
               flexDirection: "row",
-              justifyContent: "space-between"
+              justifyContent: "space-between",
             }}
             onPress={() => setShowDeleteAccountForm(!showDeleteAccountForm)}
           >
@@ -218,12 +324,12 @@ const ProfileEditScreen = ({
                 value={password}
                 leftIconContainerStyle={{ marginRight: 12 }}
                 containerStyle={{ marginBottom: 20, marginTop: 8 }}
-                onChangeText={value => setPassword(value)}
+                onChangeText={(value) => setPassword(value)}
               />
               <Button
                 title="Valider"
                 disabled={!password}
-                onPress={password => deleteAccount(password)}
+                onPress={(password) => deleteAccount(password)}
                 buttonStyle={{ backgroundColor: theme.colors.error }}
               />
             </View>
@@ -233,16 +339,16 @@ const ProfileEditScreen = ({
     </View>
   );
 };
-const mapStateToProps = state => ({
-  auth: state.auth
+const mapStateToProps = (state) => ({
+  auth: state.auth,
 });
 
-const mapDispatchToProps = dispatch => {
+const mapDispatchToProps = (dispatch) => {
   return {
-    updateUser: user => dispatch(updateUser(user)),
-    deleteAccount: password => dispatch(deleteAccount(password)),
+    updateUser: (user) => dispatch(updateUser(user)),
+    deleteAccount: (password) => dispatch(deleteAccount(password)),
     updateUserPassword: (password, newPassword) =>
-      dispatch(updateUserPassword(password, newPassword))
+      dispatch(updateUserPassword(password, newPassword)),
   };
 };
 

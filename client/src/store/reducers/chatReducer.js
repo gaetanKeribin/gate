@@ -75,28 +75,23 @@ export default function (state = initialState, action) {
       return {
         ...state,
         lastUpdatedAt: action.receivedAt,
-        conversations: !action.newConv
-          ? [
-              {
-                ...state.conversations.filter(
-                  (conv) => conv._id === action.conversation._id
-                )[0],
-                lastMessage: action.message,
-                messages: [
-                  action.message,
-                  ...state.conversations.filter(
-                    (conv) => conv._id === action.conversation._id
-                  )[0].messages,
-                ],
-              },
+        conversations: !action.newConv && [
+          {
+            ...state.conversations.filter(
+              (conv) => conv._id === action.conversation._id
+            )[0],
+            lastMessage: action.message,
+            messages: [
+              action.message,
               ...state.conversations.filter(
-                (conv) => conv._id !== action.conversation._id
-              ),
-            ]
-          : [
-              { ...action.conversation, messages: [action.message] },
-              ...state.conversations,
+                (conv) => conv._id === action.conversation._id
+              )[0].messages,
             ],
+          },
+          ...state.conversations.filter(
+            (conv) => conv._id !== action.conversation._id
+          ),
+        ],
         isLoaded: true,
       };
     case "REQUEST_LOG_OUT:SUCCESS":

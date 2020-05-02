@@ -17,6 +17,10 @@ const userSchema = new mongoose.Schema({
     trim: true,
     lowercase: true,
   },
+  professor: Boolean,
+  student: Boolean,
+  alumni: Boolean,
+  direction: Boolean,
   avatar: {
     type: Object,
   },
