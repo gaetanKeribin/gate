@@ -44,12 +44,12 @@ const Item = ({ item, navigation }) => {
               fontSize: 16,
             }}
           >
-            {item.jobTitle} en {item.employmentType}
+            {item?.jobTitle} en {item?.employmentType}
           </Text>
           <View style={{ flexDirection: "row", alignItems: "center" }}>
             <Icon name="briefcase" size={20} color="grey" />
             <Text style={{ textAlignVertical: "bottom", marginStart: 8 }}>
-              {item.organisation}
+              {item?.organisation}
             </Text>
           </View>
           <View style={{ flexDirection: "row", flex: 1, alignItems: "center" }}>
@@ -57,7 +57,7 @@ const Item = ({ item, navigation }) => {
             <Text
               style={{ textAlignVertical: "bottom", marginStart: 8, flex: 1 }}
             >
-              {_.capitalize(item.city)}
+              {_.capitalize(item?.city)}
             </Text>
             <Text
               color="grey"
@@ -67,7 +67,7 @@ const Item = ({ item, navigation }) => {
                 textAlignVertical: "bottom",
               }}
             >
-              {_.capitalize(moment(item.publishedAt).locale("fr").fromNow())}
+              {_.capitalize(moment(item?.publishedAt).locale("fr").fromNow())}
             </Text>
           </View>
         </View>
@@ -108,7 +108,7 @@ const JobsListScreen = ({ navigation, fetchJobs, jobs }) => {
           renderItem={({ item }) => (
             <Item item={item} navigation={navigation} />
           )}
-          keyExtractor={(item) => item._id}
+          keyExtractor={(item) => item?._id}
           refreshControl={
             <RefreshControl refreshing={refreshing} onRefresh={onRefresh} />
           }
@@ -128,6 +128,7 @@ const JobsListScreen = ({ navigation, fetchJobs, jobs }) => {
         containerStyle={{
           position: "absolute",
           bottom: 0,
+          left: 10,
         }}
         buttonStyle={{
           borderRadius: 50,

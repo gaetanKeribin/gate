@@ -17,17 +17,10 @@ import Auth from "./components/Auth";
 import CustomOverlay from "./components/CustomOverlay";
 import theme from "./Theme.json";
 import { navigationRef, isMountedRef } from "./RootNavigation";
-import { createStackNavigator } from "@react-navigation/stack";
-import { ActivityIndicator } from "react-native";
 import { verifyToken } from "./actions/authActions";
 
 const BottomTab = createBottomTabNavigator();
 const Drawer = createDrawerNavigator();
-const Stack = createStackNavigator();
-
-const SplashScreen = () => {
-  return <ActivityIndicator size="large" />;
-};
 
 const MainStack = () => {
   return (

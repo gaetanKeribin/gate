@@ -51,7 +51,6 @@ const Notifier = ({ notification, theme }) => {
 };
 
 const InputForm = ({ form, dispatchRedirectReset, theme, dispatch }) => {
-  if (!form) return null;
   const [inputValue, setInputValue] = useState("");
 
   return (
@@ -98,7 +97,9 @@ const InputForm = ({ form, dispatchRedirectReset, theme, dispatch }) => {
             height: 60,
             paddingHorizontal: 4,
             paddingVertical: 4,
+            flex: 1,
           }}
+          textAlignVertical="top"
         />
         <Button
           buttonStyle={{
@@ -115,8 +116,8 @@ const InputForm = ({ form, dispatchRedirectReset, theme, dispatch }) => {
           }
           disabled={!inputValue}
           type="clear"
-          onPress={() => {
-            dispatch(
+          onPress={async () => {
+            await dispatch(
               form.action({
                 [form.inputName]: inputValue,
                 ...form.actionParams,
@@ -131,8 +132,6 @@ const InputForm = ({ form, dispatchRedirectReset, theme, dispatch }) => {
 };
 
 const Menu = ({ menu, dispatchRedirectReset, dispatch }) => {
-  if (!form) return null;
-
   return (
     <View
       style={{
@@ -145,13 +144,14 @@ const Menu = ({ menu, dispatchRedirectReset, dispatch }) => {
         elevation: 8,
       }}
     >
-      {menu.buttons?.map((button) => {
+      {menu.buttons?.map((button, i) => {
         return (
           <Button
             title={button.title}
+            key={i}
             containerStyle={{ height: 30 }}
-            onPress={() => {
-              dispatch(button.action(...button.actionParams));
+            onPress={async () => {
+              await dispatch(button.action(...button.actionParams));
               dispatchRedirectReset();
             }}
           />
@@ -163,9 +163,9 @@ const Menu = ({ menu, dispatchRedirectReset, dispatch }) => {
 
 const CustomOverlay = () => {
   const overlay = useSelector((state) => state.overlay);
-  if (overlay.show === false) return null;
   const { theme } = useContext(ThemeContext);
   const dispatch = useDispatch();
+  if (overlay.show === false) return null;
 
   const dispatchRedirectReset = () => {
     typeof overlay.dispatchCallback === "function" &&
@@ -197,7 +197,11 @@ const CustomOverlay = () => {
           flex: 1,
           minHeight: 12,
         }}
-        onPress={() => dispatchRedirectReset()}
+        onPress={() => {
+          overlay.notification
+            ? dispatchRedirectReset()
+            : dispatch(resetOverlay());
+        }}
       />
       <View
         style={{
@@ -212,7 +216,11 @@ const CustomOverlay = () => {
             flex: 1,
             minWidth: 12,
           }}
-          onPress={() => dispatchRedirectReset()}
+          onPress={() => {
+            overlay.notification
+              ? dispatchRedirectReset()
+              : dispatch(resetOverlay());
+          }}
         />
         {overlay.notification && (
           <Notifier
@@ -242,7 +250,11 @@ const CustomOverlay = () => {
             flex: 1,
             minWidth: 12,
           }}
-          onPress={() => dispatchRedirectReset()}
+          onPress={() => {
+            overlay.notification
+              ? dispatchRedirectReset()
+              : dispatch(resetOverlay());
+          }}
         />
       </View>
       <TouchableOpacity
@@ -251,7 +263,11 @@ const CustomOverlay = () => {
           flex: 1,
           minHeight: 12,
         }}
-        onPress={() => dispatchRedirectReset()}
+        onPress={() => {
+          overlay.notification
+            ? dispatchRedirectReset()
+            : dispatch(resetOverlay());
+        }}
       />
     </View>
   );

@@ -23,7 +23,6 @@ const userSchema = new mongoose.Schema({
   promo: {
     type: Number,
     trim: true,
-    default: 1,
   },
   description: {
     type: String,
@@ -91,6 +90,9 @@ const userSchema = new mongoose.Schema({
   posts: [{ type: mongoose.Schema.Types.ObjectId, ref: "Post" }],
   conversations: [
     { type: mongoose.Schema.Types.ObjectId, ref: "Conversations" },
+  ],
+  hasPrivateConversationWith: [
+    { type: mongoose.Schema.Types.ObjectId, ref: "User" },
   ],
 });
 

@@ -19,12 +19,11 @@ router.get("/", authenticate, async (req, res, next) => {
 });
 
 router.get("/me", authenticate, async (req, res, next) => {
-  console.log("jobsController fetch my jobs");
-
   try {
     await req.user.populate("jobs").execPopulate();
     req.user.jobs = req.user.jobs.reverse();
 
+    console.log("User's jobs fetched");
     res.status(200).send({ user: req.user });
   } catch (err) {
     next(err);
@@ -33,8 +32,6 @@ router.get("/me", authenticate, async (req, res, next) => {
 
 // Post a new job offer in db
 router.post("/", authenticate, async (req, res, next) => {
-  console.log("jobsController postJob");
-
   // Security - picks only relevant fields
   const job = new Job(req.body);
 
@@ -65,7 +62,7 @@ router.post("/", authenticate, async (req, res, next) => {
 
     req.user.jobs = [...req.user.jobs, job._id];
     await req.user.save();
-
+    console.log("Job posted");
     res.status(200).send({ job });
   } catch (err) {
     next(err);
@@ -82,7 +79,7 @@ router.delete("/:id", authenticate, async (req, res, next) => {
     _.remove(req.user.jobs, (item) => item._id === req.params.id);
     await req.user.save();
 
-    console.log("job deleted");
+    console.log("Job deleted");
     res.status(200).send();
   } catch (error) {
     next(error);
@@ -90,8 +87,6 @@ router.delete("/:id", authenticate, async (req, res, next) => {
 });
 
 router.patch("/:id", authenticate, async (req, res, next) => {
-  console.log("jobsController updateJob");
-
   const {
     jobTitle,
     jobDesc,
@@ -123,7 +118,7 @@ router.patch("/:id", authenticate, async (req, res, next) => {
 
     await job.save();
     await req.user.populate("jobs").execPopulate();
-
+    console.log("Job updated");
     res.status(200).send({ jobs: req.user.jobs });
   } catch (err) {
     next(err);

@@ -1,5 +1,5 @@
 import React, { useState, useEffect, useCallback, useContext } from "react";
-import { connect, useDispatch } from "react-redux";
+import { connect, useDispatch, useSelector } from "react-redux";
 import {
   View,
   Text,
@@ -28,24 +28,23 @@ import {
 import { apiConfig } from "../../config";
 import { showOverlay } from "../../actions/overlayAction";
 
-const SearchResultItem = ({ item, theme, navigation, chat }) => {
+const SearchResultItem = ({ item, theme, navigation, chat, dispatch }) => {
   const [showMessageForm, setShowMessageForm] = useState(false);
   const [newMessage, setNewMessage] = useState("");
-  const dispatch = useDispatch();
   const fullName =
-    _.capitalize(item.firstname) + " " + _.capitalize(item.lastname);
+    _.capitalize(item?.firstname) + " " + _.capitalize(item?.lastname);
 
   return (
     <TouchableOpacity
       onPress={
-        chat.interlocutorsIds.includes(item._id)
+        chat.interlocutorsIds.includes(item?._id)
           ? () =>
               navigation.navigate("Room", {
                 title: fullName,
                 conversation: chat.convIdsWithPartsIds
                   .filter(
                     (element) =>
-                      element.participants.includes(item._id) === true
+                      element.participants.includes(item?._id) === true
                   )
                   .filter((conv) => conv.participants.length === 2)[0],
               })
@@ -55,7 +54,7 @@ const SearchResultItem = ({ item, theme, navigation, chat }) => {
                   form: {
                     action: sendMessage,
                     inputName: "text",
-                    actionParams: { recipients: [item._id] },
+                    actionParams: { recipients: [item?._id] },
                     message: "Demarrer une conversation avec " + fullName,
                   },
                   dispatchCallback: fetchConversations,
@@ -81,17 +80,17 @@ const SearchResultItem = ({ item, theme, navigation, chat }) => {
             marginRight: 12,
           }}
         >
-          {item.avatar ? (
+          {item?.avatar ? (
             <Avatar
               source={{
-                uri: `https://siee-gate.herokuapp.com/api/files/avatar/${item.avatar?.filename}`,
+                uri: `https://siee-gate.herokuapp.com/api/files/avatar/${item?.avatar?.filename}`,
               }}
               size="small"
             />
           ) : (
             <Avatar
               size="small"
-              title={item.firstname[0].concat(item.lastname[0]).toUpperCase()}
+              title={item?.firstname[0].concat(item?.lastname[0]).toUpperCase()}
             />
           )}
         </View>
@@ -136,7 +135,7 @@ const SearchResultItem = ({ item, theme, navigation, chat }) => {
               disabled={!newMessage}
               type="clear"
               onPress={() => {
-                onSendMessage(newMessage, item._id);
+                onSendMessage(newMessage, item?._id);
                 setNewMessage("");
                 setShowMessageForm(false);
               }}
@@ -148,26 +147,17 @@ const SearchResultItem = ({ item, theme, navigation, chat }) => {
   );
 };
 
-const Item = ({
-  item,
-  navigation,
-  auth,
-  theme,
-  deleteConversation,
-  fetchConversations,
-}) => {
-  const [showActionMenu, setShowActionMenu] = useState(false);
-
+const Item = ({ item, navigation, auth, theme, dispatch }) => {
   const listParticipants = () => {
-    if (item.participants.length > 1) {
-      const participantsList = item.participants.map((participant) =>
+    if (item?.participants?.length > 1) {
+      const participantsList = item?.participants?.map((participant) =>
         _.capitalize(participant.firstname)
       );
       return participantsList.toString().replace(",", ", ");
     } else {
-      return _.capitalize(item.participants[0].firstname).concat(
+      return _.capitalize(item?.participants[0]?.firstname).concat(
         " ",
-        _.capitalize(item.participants[0].lastname)
+        _.capitalize(item?.participants[0]?.lastname)
       );
     }
   };
@@ -199,18 +189,18 @@ const Item = ({
               paddingRight: 8,
             }}
           >
-            {item.participants[0].avatar ? (
+            {item?.participants[0]?.avatar ? (
               <Avatar
                 source={{
-                  uri: `${apiConfig.baseUrl}/files/avatar/${item.participants[0].avatar?.filename}`,
+                  uri: `${apiConfig.baseUrl}/files/avatar/${item?.participants[0]?.avatar?.filename}`,
                 }}
                 size="medium"
               />
             ) : (
               <Avatar
                 size="medium"
-                title={item.participants[0].firstname[0]
-                  .concat(item.participants[0].lastname[0])
+                title={item?.participants[0]?.firstname[0]
+                  .concat(item?.participants[0]?.lastname[0])
                   .toUpperCase()}
               />
             )}
@@ -246,7 +236,7 @@ const Item = ({
                 }}
               >
                 {_.capitalize(
-                  moment(item.lastMessage.sentAt).locale("fr").fromNow()
+                  moment(item?.lastMessage?.sentAt).locale("fr").fromNow()
                 )}
               </Text>
             </View>
@@ -254,7 +244,7 @@ const Item = ({
               <View
                 style={{ alignContent: "center", justifyContent: "center" }}
               >
-                {item.lastMessage.sender === auth.user._id ? (
+                {item?.lastMessage?.sender === auth.user._id ? (
                   <Icon
                     name="arrow-top-right"
                     color={theme.colors.grey1}
@@ -275,7 +265,7 @@ const Item = ({
                   flex: 1,
                 }}
               >
-                {item.lastMessage.text}
+                {item?.lastMessage?.text}
               </Text>
               <View
                 style={{
@@ -295,29 +285,15 @@ const Item = ({
                             {
                               title: "Supprimer la conversation",
                               action: deleteConversation,
-                              actionParams: [item._id],
+                              actionParams: [item?._id],
                             },
                           ],
                         },
+                        dispatchCallback: fetchConversations,
                       })
                     )
                   }
                 />
-
-                {showActionMenu && (
-                  <Icon
-                    name="delete"
-                    size={20}
-                    color="black"
-                    onPress={async () => {
-                      setDeleting(true);
-                      await deleteConversation(item._id);
-                      setDeleting(false);
-                      setShowActionMenu(false);
-                      fetchConversations();
-                    }}
-                  />
-                )}
               </View>
             </View>
           </View>
@@ -327,24 +303,17 @@ const Item = ({
   );
 };
 
-const ChatLobbyScreen = ({
-  navigation,
-  fetchConversations,
-  fetchUsers,
-  chat,
-  users,
-  auth,
-  sendMessage,
-  deleteConversation,
-}) => {
+const ChatLobbyScreen = ({ navigation }) => {
   const [refreshing, setRefreshing] = useState(false);
   const [search, setSearch] = useState("");
   const { theme } = useContext(ThemeContext);
+  const dispatch = useDispatch();
+  const { chat, users, auth } = useSelector((state) => state);
 
   useEffect(() => {
     function fetchData() {
-      fetchConversations();
-      fetchUsers();
+      dispatch(fetchConversations());
+      dispatch(fetchUsers());
     }
     fetchData();
   }, []);
@@ -392,9 +361,10 @@ const ChatLobbyScreen = ({
                 theme={theme}
                 chat={chat}
                 navigation={navigation}
+                dispatch={dispatch}
               />
             )}
-            keyExtractor={(item) => item._id}
+            keyExtractor={(item) => item?._id}
           />
         )}
         {!users.isLoaded && (
@@ -419,11 +389,10 @@ const ChatLobbyScreen = ({
                 auth={auth}
                 navigation={navigation}
                 theme={theme}
-                deleteConversation={deleteConversation}
-                fetchConversations={fetchConversations}
+                dispatch={dispatch}
               />
             )}
-            keyExtractor={(item) => item._id}
+            keyExtractor={(item) => item?._id}
             refreshControl={
               <RefreshControl refreshing={refreshing} onRefresh={onRefresh} />
             }
@@ -461,20 +430,4 @@ const ChatLobbyScreen = ({
   );
 };
 
-const mapStateToProps = (state) => ({
-  auth: state.auth,
-  chat: state.chat,
-  users: state.users,
-});
-
-const mapDispatchToProps = (dispatch) => {
-  return {
-    fetchConversations: () => dispatch(fetchConversations()),
-    fetchUsers: () => dispatch(fetchUsers()),
-    sendMessage: (message) => dispatch(sendMessage(message)),
-    deleteConversation: (conversation_id) =>
-      dispatch(deleteConversation(conversation_id)),
-  };
-};
-
-export default connect(mapStateToProps, mapDispatchToProps)(ChatLobbyScreen);
+export default ChatLobbyScreen;

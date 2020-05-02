@@ -23,7 +23,7 @@ router.post("/login", async (req, res, next) => {
 router.get("/token/verify", authenticate, async (req, res, next) => {
   res.status(200).send("Token valid");
 });
-router.post("/signup", async function(req, res, next) {
+router.post("/signup", async function (req, res, next) {
   console.log("authController signUp");
 
   const { email, password, firstname, lastname } = req.body;
@@ -40,7 +40,7 @@ router.post("/signup", async function(req, res, next) {
 });
 router.get("/logout", authenticate, async (req, res, next) => {
   try {
-    req.user.tokens = req.user.tokens.filter(token => {
+    req.user.tokens = req.user.tokens.filter((token) => {
       return token.token !== req.token;
     });
     await req.user.save();
@@ -54,16 +54,16 @@ router.delete("/", authenticate, async (req, res, next) => {
   console.log("usersController removeUser");
 
   try {
-    req.user.jobs.forEach(async job => {
+    req.user.jobs.forEach(async (job) => {
       await Job.findByIdAndDelete(job);
     });
-    req.user.conversations.forEach(conversation => {
-      conversation.messages.forEach(async message => {
+    req.user.conversations.forEach((conversation) => {
+      conversation.messages.forEach(async (message) => {
         await Message.findByIdAndDelete(message);
       });
     });
-    req.user.conversations.forEach(async conversation => {
-      await Conversation.findByIdAndDelete(conversation);
+    req.user.conversations.forEach(async (conversation) => {
+      await conversation.findByIdAndDelete(conversation);
     });
     await User.findByIdAndDelete(req.user._id);
     res.status(200).send();

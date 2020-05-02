@@ -1,12 +1,13 @@
 import React, { useState, useContext } from "react";
-import { connect } from "react-redux";
+import { connect, useDispatch } from "react-redux";
 import { View, Switch, Text, ScrollView } from "react-native";
 import { Input, Button, ThemeContext } from "react-native-elements";
 import AppNavbar from "../AppNavbar";
 import { createJob } from "../../actions/jobsActions";
 
-const PostScreen = ({ createJob, navigation }) => {
+const PostScreen = ({}) => {
   const { theme } = useContext(ThemeContext);
+  const dispatch = useDispatch();
   const [uploading, setUploading] = useState(false);
 
   const [errors, setErrors] = useState({});
@@ -47,7 +48,7 @@ const PostScreen = ({ createJob, navigation }) => {
       contact,
     };
 
-    createJob(jobOffer);
+    dispatch(createJob(jobOffer));
     setUploading(false);
 
     setAsap(false);
@@ -173,12 +174,4 @@ const PostScreen = ({ createJob, navigation }) => {
   );
 };
 
-const mapStateToProps = (state) => ({});
-
-const mapDispatchToProps = (dispatch) => {
-  return {
-    createJob: (job) => dispatch(createJob(job)),
-  };
-};
-
-export default connect(mapStateToProps, mapDispatchToProps)(PostScreen);
+export default PostScreen;

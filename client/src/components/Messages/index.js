@@ -25,21 +25,21 @@ const MessagesScreen = ({ navigation }) => {
             const { conversation } = route.params;
             if (!route.params.title) {
               let title;
-              if (conversation.participants.length > 1) {
+              if (conversation?.participants?.length > 1) {
               } else {
                 title =
-                  _.capitalize(conversation.participants[0].firstname) +
+                  _.capitalize(conversation?.participants[0]?.firstname) +
                   " " +
-                  _.capitalize(conversation.participants[0].lastname);
+                  _.capitalize(conversation?.participants[0]?.lastname);
               }
               return {
                 title,
-                headerStatusBarHeight: 0
+                headerStatusBarHeight: 0,
               };
             } else {
               return {
                 title: route.params.title,
-                headerStatusBarHeight: 0
+                headerStatusBarHeight: 0,
               };
             }
           }}

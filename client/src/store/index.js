@@ -6,7 +6,7 @@ import {
   axiosMiddleware,
   devMiddleware,
 } from "./reduxMiddlewares";
-import AsyncStorage from "@react-native-community/async-storage";
+import { AsyncStorage } from "react-native";
 import { persistStore, persistReducer } from "redux-persist";
 
 const persistConfig = {
@@ -23,8 +23,6 @@ const store = createStore(persistedReducer, applyMiddleware(...middlewares));
 
 let persistor = persistStore(store);
 
-// store.subscribe(() => {
-//   // console.log("new client state", store.getState().auth);
-// });
+store.subscribe(() => {});
 
 export { store, persistor };

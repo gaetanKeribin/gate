@@ -1,4 +1,4 @@
-export const createJob = job => {
+export const createJob = (job) => {
   return {
     type: "REQUEST_CREATE_JOB",
     route: "jobs",
@@ -6,15 +6,9 @@ export const createJob = job => {
     method: "POST",
     successNotification: {
       message: "Votre offre d'emploi a été créée",
-      variant: "success",
       redirect: "MyJobs",
-      timeout: 1000
     },
-    errorNotification: {
-      message: "Cela n'a pas marché... Essayez de nouveau.",
-      variant: "error",
-      timeout: 2000
-    }
+    errorNotification: true,
   };
 };
 
@@ -22,7 +16,7 @@ export const fetchJobs = () => {
   return {
     type: "REQUEST_JOBS",
     route: "jobs",
-    method: "GET"
+    method: "GET",
   };
 };
 
@@ -30,11 +24,11 @@ export const fetchMyJobs = () => {
   return {
     type: "REQUEST_MY_JOBS",
     route: "jobs/me",
-    method: "GET"
+    method: "GET",
   };
 };
 
-export const updateJob = job => {
+export const updateJob = (job) => {
   return {
     type: "REQUEST_UPDATE_JOB",
     method: "PATCH",
@@ -44,17 +38,17 @@ export const updateJob = job => {
       message: "Votre offre d'emploi a été mise à jour.",
       variant: "success",
       redirect: "MyJobs",
-      timeout: 1000
+      timeout: 1000,
     },
     errorNotification: {
       message: "Cela n'a pas marché... Essayez de nouveau.",
       variant: "error",
-      timeout: 2000
-    }
+      timeout: 2000,
+    },
   };
 };
 
-export const deleteJob = id => {
+export const deleteJob = (id) => {
   return {
     type: "REQUEST_DELETE_JOB",
     method: "DELETE",
@@ -63,12 +57,12 @@ export const deleteJob = id => {
       message: "Offre d'emploi supprimée.",
       variant: "success",
       redirect: "MyJobs",
-      timeout: 1000
+      timeout: 1000,
     },
     errorNotification: {
       message: "Cela n'a pas marché... Essayez de nouveau.",
       variant: "error",
-      timeout: 2000
-    }
+      timeout: 2000,
+    },
   };
 };

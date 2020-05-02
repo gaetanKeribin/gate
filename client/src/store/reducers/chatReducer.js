@@ -7,31 +7,30 @@ const initialState = {
   lastUpdatedAt: null,
   isLoaded: false,
   isFetchingConversations: false,
-  isFetchingConversation: false
+  isFetchingConversation: false,
 };
 
-export default function(state = initialState, action) {
+export default function (state = initialState, action) {
   switch (action.type) {
     case "REQUEST_DELETE_CONVERSATION":
       return {
         ...state,
-        isDeleting: true
+        isDeleting: true,
       };
     case "REQUEST_DELETE_CONVERSATION:SUCCESS":
       return {
-        ...state,
+        ...initialState,
         isDeleting: false,
-        lastUpdatedAt: action.receivedAt
       };
     case "REQUEST_DELETE_CONVERSATION:ERROR":
       return {
         ...state,
-        isFetchingConversations: false
+        isFetchingConversations: false,
       };
     case "REQUEST_CONVERSATIONS":
       return {
         ...state,
-        isFetchingConversations: true
+        isFetchingConversations: true,
       };
     case "REQUEST_CONVERSATIONS:SUCCESS":
       return {
@@ -39,22 +38,22 @@ export default function(state = initialState, action) {
         lastUpdatedAt: action.receivedAt,
         isLoaded: true,
         isFetchingConversations: false,
-        ...action.data
+        ...action.data,
       };
     case "RECEIVE_CONVERSATIONS:ERROR":
       return {
         ...state,
-        isFetchingConversations: false
+        isFetchingConversations: false,
       };
     case "REQUEST_CONVERSATION":
       return {
         ...state,
-        isFetchingConversation: true
+        isFetchingConversation: true,
       };
     case "REQUEST_CONVERSATION:SUCCESS":
       state.conversations.splice(
         state.conversations
-          .map(function(c) {
+          .map(function (c) {
             return c._id;
           })
           .indexOf(action.data._id),
@@ -65,12 +64,12 @@ export default function(state = initialState, action) {
         ...state,
         lastUpdatedAt: action.receivedAt,
         isLoaded: true,
-        isFetchingConversation: false
+        isFetchingConversation: false,
       };
     case "RECEIVE_CONVERSATION:ERROR":
       return {
         ...state,
-        isFetchingConversation: false
+        isFetchingConversation: false,
       };
     case "RECEIVE_MESSAGE":
       return {
@@ -80,25 +79,25 @@ export default function(state = initialState, action) {
           ? [
               {
                 ...state.conversations.filter(
-                  conv => conv._id === action.conversation._id
+                  (conv) => conv._id === action.conversation._id
                 )[0],
                 lastMessage: action.message,
                 messages: [
                   action.message,
                   ...state.conversations.filter(
-                    conv => conv._id === action.conversation._id
-                  )[0].messages
-                ]
+                    (conv) => conv._id === action.conversation._id
+                  )[0].messages,
+                ],
               },
               ...state.conversations.filter(
-                conv => conv._id !== action.conversation._id
-              )
+                (conv) => conv._id !== action.conversation._id
+              ),
             ]
           : [
               { ...action.conversation, messages: [action.message] },
-              ...state.conversations
+              ...state.conversations,
             ],
-        isLoaded: true
+        isLoaded: true,
       };
     case "REQUEST_LOG_OUT:SUCCESS":
       return initialState;

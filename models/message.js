@@ -5,26 +5,30 @@ const messageSchema = new mongoose.Schema({
     type: String,
     required: true,
     trim: true,
-    default: "employmentType"
   },
+  conversation_id: {
+    type: mongoose.Schema.Types.ObjectId,
+    ref: "Conversation",
+  },
+  recipients: [{ type: mongoose.Schema.Types.ObjectId, ref: "User" }],
   sender: {
     type: mongoose.Schema.Types.ObjectId,
     required: true,
-    ref: "User"
+    ref: "User",
   },
   sentAt: {
     type: Date,
     required: true,
-    default: Date.now
+    default: Date.now,
   },
   read: {
     type: Boolean,
     required: true,
-    default: false
-  }
+    default: false,
+  },
 });
 
-messageSchema.methods.toJSON = function() {
+messageSchema.methods.toJSON = function () {
   const message = this;
   const messageObject = message.toObject();
 

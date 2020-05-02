@@ -42,7 +42,7 @@ app.use(function (error, req, res, next) {
   if (!error.status) {
     console.error("Caught an error", error.stack);
     res.statusMessage = error;
-    res.status(400).send({ message: error.replace("Error: ", "") });
+    res.status(400).send({ message: error.toString().replace("Error: ", "") });
   }
 });
 
@@ -69,27 +69,23 @@ io.on("connection", async function (socket) {
     console.log(`socket ${socket.id} disconnected`);
   });
   socket.on("message", async function (message) {
-    message = {
-      ...message,
-      sender: socket.user._id,
-    };
+    console.log("message received");
+    message.sender = socket.user._id;
     if (!message.text) {
       throw new Error("no text in message");
     } else if (!message.recipients && !message.conversation_id) {
       throw new Error("no recipients nor conversation_id");
     }
-    const { conversation, savedMessage, newConv } = await saveMessageInDb({
-      message: message,
-      sender: socket.user._id,
-      recipients: message.recipients,
-      conversation_id: message.conversation_id,
-    });
+    const { conversation, savedMessage, newConv } = await saveMessageInDb(
+      message,
+      socket.user
+    );
     const recipientsSockets = await findSocketsWithUsers(
       conversation.participants
     );
     recipientsSockets.forEach((socketId) => {
       io.to(`${socketId}`).emit("message", {
-        savedMessage,
+        message: savedMessage,
         conversation,
         newConv,
       });

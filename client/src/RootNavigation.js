@@ -7,7 +7,6 @@ export function navigate(name, params) {
   if (isMountedRef.current && navigationRef.current) {
     navigationRef.current.navigate(name, params);
   } else {
-    console.log("x");
   }
 }
 export function openDrawer() {

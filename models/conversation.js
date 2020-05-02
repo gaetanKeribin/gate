@@ -1,32 +1,24 @@
 const mongoose = require("mongoose");
-
+const Message = require("./message");
 const conversationSchema = new mongoose.Schema({
   title: {
     type: String,
-    trim: true
-  },
-  lastMessageSentAt: {
-    type: Date
+    trim: true,
   },
   participants: [{ type: mongoose.Schema.Types.ObjectId, ref: "User" }],
   startedAt: {
     type: Date,
     required: true,
-    default: Date.now
+    default: Date.now,
   },
-  messages: [
-    {
-      type: mongoose.Schema.Types.ObjectId,
-      ref: "Message"
-    }
-  ],
-  lastMessage: {
-    type: mongoose.Schema.Types.ObjectId,
-    ref: "Message"
-  }
+  messages: [{ type: mongoose.Schema.Types.ObjectId, ref: "Message" }],
+  lastMessage: { type: mongoose.Schema.Types.ObjectId, ref: "Message" },
+  lastMessageSentAt: {
+    type: Date,
+  },
 });
 
-conversationSchema.methods.toJSON = function() {
+conversationSchema.methods.toJSON = function () {
   const conversation = this;
   const conversationObject = conversation.toObject();
 

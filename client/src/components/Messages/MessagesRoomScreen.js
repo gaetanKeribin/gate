@@ -74,11 +74,11 @@ const RoomScreen = ({ chat, sendMessage, route, auth, fetchConversation }) => {
         renderItem={({ item }) => (
           <Message
             message={item}
-            incoming={item.sender !== auth.user._id}
+            incoming={item?.sender !== auth.user._id}
             theme={theme}
           />
         )}
-        keyExtractor={(item) => item._id}
+        keyExtractor={(item) => item?._id}
         inverted={true}
       />
       <View

@@ -5,15 +5,12 @@ import { showOverlay } from "../actions/overlayAction";
 
 export const devMiddleware = (store) => (next) => (action) => {
   console.log(action.type);
-  next(action);
+  return next(action);
 };
 
 export const socketMiddleware = () => {
   let socket;
   return (store) => (next) => (action) => {
-    if (typeof action === "function") {
-      return next(action);
-    }
     if (
       action.type === "REQUEST_LOG_IN:SUCCESS" ||
       action.type === "REQUEST_SIGN_UP:SUCCESS" ||
@@ -34,6 +31,9 @@ export const socketMiddleware = () => {
       socket.on("connected", (data) => {
         console.log("Socket connected");
       });
+      socket.on("unauthorized", (data) => {
+        console.log("Socket disconnected");
+      });
       socket.on("authenticated", (data) => {
         console.log("Socket authenticated");
       });
@@ -53,6 +53,7 @@ export const socketMiddleware = () => {
       }
       if (action.type === "REQUEST_LOG_OUT:SUCCESS") {
         socket.disconnect();
+        console.log("socket disconnected");
       }
     }
     return next(action);
@@ -110,10 +111,17 @@ export const axiosMiddleware = (store) => (next) => (action) => {
     request
       .then((res) => {
         if (action.successNotification) {
-          store.dispatch({
-            type: "NOTIFY_USER",
-            notification: action.successNotification,
-          });
+          store.dispatch(
+            showOverlay({
+              timeout: 3000,
+              redirect: action.successNotification.redirect,
+              dispatchCallback: action.successNotification.dispatchCallback,
+              notification: {
+                variant: "success",
+                message: action.successNotification.message,
+              },
+            })
+          );
         }
         return store.dispatch({
           type: `${action.type}:SUCCESS`,
@@ -122,10 +130,10 @@ export const axiosMiddleware = (store) => (next) => (action) => {
         });
       })
       .catch((err) => {
-        console.log(err, err.response);
+        console.log(err);
         if (
           action.errorNotification ||
-          err.response.data.forceReconnect === true
+          err.response?.data.forceReconnect === true
         ) {
           store.dispatch(
             showOverlay({
@@ -146,8 +154,8 @@ export const axiosMiddleware = (store) => (next) => (action) => {
         });
       });
 
-    next(action);
+    return next(action);
   } else {
-    next(action);
+    return next(action);
   }
 };
