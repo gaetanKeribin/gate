@@ -1,7 +1,0 @@
-{
-  "display": "standalone",
-  "lang": "en",
-  "name": "siee-gate-client",
-  "short_name": "siee-gate-client",
-  "start_url": "/?utm_source=web_app_manifest"
-}

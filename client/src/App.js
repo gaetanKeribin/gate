@@ -1,5 +1,4 @@
 import React from "react";
-import "react-native-gesture-handler";
 import { Provider, useSelector, shallowEqual, useDispatch } from "react-redux";
 import { View, SafeAreaView, Platform, StatusBar } from "react-native";
 import { store, persistor } from "./store/index";
