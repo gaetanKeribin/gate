@@ -5,11 +5,11 @@ import { Input, Button, Icon } from "react-native-elements";
 import { signUp } from "../../actions/authActions";
 
 const SignUpScreen = ({ signUp, auth }) => {
-  const [firstname, setFirstname] = useState("John");
-  const [lastname, setLastname] = useState("Doe");
-  const [email, setEmail] = useState("johndoe@gmail.com");
-  const [password, setPassword] = useState("12345678");
-  const [confirmation, setConfirmation] = useState("12345678");
+  const [firstname, setFirstname] = useState("");
+  const [lastname, setLastname] = useState("");
+  const [email, setEmail] = useState("");
+  const [password, setPassword] = useState("");
+  const [confirmation, setConfirmation] = useState("");
   const [errors, setErrors] = useState({});
 
   const handleSignUp = async () => {

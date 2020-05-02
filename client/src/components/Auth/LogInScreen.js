@@ -7,8 +7,8 @@ import { LinearGradient } from "expo-linear-gradient";
 
 const logInScreen = ({ auth, logIn, navigation }) => {
   const { theme } = useContext(ThemeContext);
-  const [email, setEmail] = useState("johndoe@gmail.com");
-  const [password, setPassword] = useState("12345678");
+  const [email, setEmail] = useState("");
+  const [password, setPassword] = useState("");
   const [errors, setErrors] = useState({});
 
   const handleLogIn = async () => {

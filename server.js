@@ -28,12 +28,6 @@ app.use(require("method-override")("X-HTTP-Method-Override"));
 app.use(express.json());
 app.use(require("cors")());
 
-// app.use((req, res, next) => {
-//   res.set("Access-Control-Allow-Origin", ["*"]);
-//   res.set("Access-Control-Allow-Methods", "GET,PUT,POST,DELETE,PATCH");
-//   res.set("Access-Control-Allow-Headers", "Content-Type");
-//   next();
-// });
 app.use("/api/users", usersRouter);
 app.use("/api/jobs", jobsRouter);
 app.use("/api/files", filesRouter);

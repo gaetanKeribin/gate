@@ -12,15 +12,15 @@ const PostScreen = ({ createJob, navigation }) => {
   const [errors, setErrors] = useState({});
 
   // Job
-  const [employmentType, setEmploymentType] = useState("CDI");
+  const [employmentType, setEmploymentType] = useState("");
   const [asap, setAsap] = useState(false);
-  const [organisation, setOrganisation] = useState("EY");
-  const [city, setCity] = useState("Paris");
-  const [jobTitle, setJobTitle] = useState("Auditeur junior");
-  const [jobDesc, setJobDesc] = useState("Desc");
+  const [organisation, setOrganisation] = useState("");
+  const [city, setCity] = useState("");
+  const [jobTitle, setJobTitle] = useState("");
+  const [jobDesc, setJobDesc] = useState("");
   const [salary, setSalary] = useState();
   const [minExp, setMinExp] = useState();
-  const [contact, setContact] = useState("contact@gmail.com");
+  const [contact, setContact] = useState("");
 
   const filled =
     !city ||
