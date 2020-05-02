@@ -28,17 +28,15 @@ app.use(require("method-override")("X-HTTP-Method-Override"));
 app.use(express.json());
 app.use(require("cors")());
 
-// app.use((req, res, next) => {
-//   res.set("Access-Control-Allow-Origin", ["*"]);
-//   res.set("Access-Control-Allow-Methods", "GET,PUT,POST,DELETE,PATCH");
-//   res.set("Access-Control-Allow-Headers", "Content-Type");
-//   next();
-// });
+//Routes
+
 app.use("/api/users", usersRouter);
 app.use("/api/jobs", jobsRouter);
 app.use("/api/files", filesRouter);
 app.use("/api/auth", authRouter);
 app.use("/api/conversations", conversationsRouter);
+
+// Error handler middleware
 
 app.use(function (error, req, res, next) {
   if (!error.status) {
@@ -49,6 +47,9 @@ app.use(function (error, req, res, next) {
 });
 
 const server = require("http").createServer(app);
+
+// Socket (for full duplex communication)
+
 const io = require("socket.io")(server);
 io.on("connection", async function (socket) {
   socket.emit("connected");
@@ -95,6 +96,8 @@ io.on("connection", async function (socket) {
     });
   });
 });
+
+// Website server
 
 if (process.env.NODE_ENV === "production") {
   app.use(express.static("web-build"));
