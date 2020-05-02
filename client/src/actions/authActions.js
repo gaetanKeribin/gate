@@ -1,6 +1,4 @@
 export const logIn = (credentials) => {
-  console.log(credentials);
-
   return {
     type: "REQUEST_LOG_IN",
     route: "/auth/login",

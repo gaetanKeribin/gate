@@ -1,11 +1,11 @@
 const User = require("../models/user");
 
-exports.saveSocketToUser = async function(socket) {
+exports.saveSocketToUser = async function (socket) {
   try {
     const user = await User.findById(socket.user._id);
     user.sockets = [
-      ...user.sockets.filter(sock => sock.ip !== socket.handshake.address),
-      { ip: socket.handshake.address, socketId: socket.id }
+      ...user.sockets.filter((sock) => sock.ip !== socket.handshake.address),
+      { ip: socket.handshake.address, socketId: socket.id },
     ];
     await user.save();
     console.log(`Socket ${socket.id} saved to ${socket.user._id}`);
@@ -14,12 +14,12 @@ exports.saveSocketToUser = async function(socket) {
   }
 };
 
-exports.removeSocketFromUser = async function(socket) {
+exports.removeSocketFromUser = async function (socket) {
   try {
     await User.findByIdAndUpdate(socket.user._id, {
       $pull: {
-        sockets: { socketId: socket.id }
-      }
+        sockets: { socketId: socket.id },
+      },
     });
     console.log(`Socket ${socket.id} deleted.`);
   } catch (err) {
@@ -27,19 +27,18 @@ exports.removeSocketFromUser = async function(socket) {
   }
 };
 
-exports.findSocketsWithUsers = async function(userIds) {
-  console.log("usersController findSocketsWithUsers", userIds);
-
+exports.findSocketsWithUsers = async function (userIds) {
   try {
     const sockets = [];
     const users = await User.find({ _id: { $in: userIds } }).select(
       "sockets -_id"
     );
-    users.forEach(user => {
-      user.sockets.forEach(socket => {
+    users.forEach((user) => {
+      user.sockets.forEach((socket) => {
         sockets.push(socket.socketId);
       });
     });
+    console.log("Sockets found !", sockets);
 
     return sockets;
   } catch (err) {

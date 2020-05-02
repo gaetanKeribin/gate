@@ -15,9 +15,9 @@ const SearchResultItem = ({ item, theme }) => {
           borderBottomWidth: 1,
         }}
       >
-        <Text style={{ paddingLeft: 12 }}>{item.value}</Text>
+        <Text style={{ paddingLeft: 12 }}>{item?.value}</Text>
         <Text style={{ paddingLeft: 12, color: theme.colors.grey2 }}>
-          {item.occurence}
+          {item?.occurence}
         </Text>
       </View>
     </TouchableOpacity>
@@ -92,7 +92,7 @@ const FilterBar = ({ data, keys }) => {
             elevation: 3,
             paddingVertical: 4,
           }}
-          keyExtractor={(item, index) => item.value + index}
+          keyExtractor={(item, index) => item?.value + index}
           renderItem={({ item }) => (
             <SearchResultItem item={item} theme={theme} />
           )}

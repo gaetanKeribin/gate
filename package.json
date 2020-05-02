@@ -33,8 +33,10 @@
     "supertest": "^3.4.2"
   },
   "scripts": {
-    "dev": "export NODE_ENV=dev && nodemon server.js",
-    "local": "export NODE_ENV=dev && nodemon server.js",
+    "web-client": "cd client && npm run expo-web",
+    "android-client": "cd client && npm run expo-android",
+    "dev-web": "concurrently -n 'server,client' -c 'blue,green' \"export NODE_ENV=dev && nodemon server.js\" \"npm run web-client\"",
+    "dev-android": "concurrently -n 'server,client' -c 'blue,green' \"export NODE_ENV=dev && nodemon server.js\" \"npm run android-client\"",
     "start": "node server.js"
   },
   "author": "",

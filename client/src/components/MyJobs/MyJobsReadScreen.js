@@ -29,28 +29,18 @@ const Item = ({ item, navigation }) => {
       >
         <View style={{ flex: 1 }}>
           <Text
-            color="grey"
-            style={{
-              color: "grey",
-              fontSize: 10,
-              textAlignVertical: "bottom",
-            }}
-          >
-            {_.capitalize(moment(item.publishedAt).locale("fr").fromNow())}
-          </Text>
-          <Text
             style={{
               textAlignVertical: "bottom",
               fontWeight: "bold",
               fontSize: 16,
             }}
           >
-            {item.jobTitle} en {item.employmentType}
+            {item?.jobTitle} en {item?.employmentType}
           </Text>
           <View style={{ flexDirection: "row", alignItems: "center" }}>
             <Icon name="briefcase" size={20} color="grey" />
             <Text style={{ textAlignVertical: "bottom", marginStart: 8 }}>
-              {item.organisation}
+              {item?.organisation}
             </Text>
           </View>
           <View style={{ flexDirection: "row", alignItems: "center", flex: 1 }}>
@@ -58,7 +48,17 @@ const Item = ({ item, navigation }) => {
             <Text
               style={{ textAlignVertical: "bottom", marginStart: 8, flex: 1 }}
             >
-              {_.capitalize(item.city)}
+              {_.capitalize(item?.city)}
+            </Text>
+            <Text
+              color="grey"
+              style={{
+                color: "grey",
+                fontSize: 10,
+                textAlignVertical: "bottom",
+              }}
+            >
+              {_.capitalize(moment(item?.publishedAt).locale("fr").fromNow())}
             </Text>
           </View>
         </View>
@@ -86,7 +86,7 @@ const MyJobsScreen = ({ auth, navigation, fetchMyJobs }) => {
       <FlatList
         data={auth.user.jobs}
         renderItem={({ item }) => <Item item={item} navigation={navigation} />}
-        keyExtractor={(item) => item._id}
+        keyExtractor={(item) => item?._id}
       />
     </View>
   );

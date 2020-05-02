@@ -1,11 +1,11 @@
 import React, { useEffect } from "react";
-import { connect } from "react-redux";
+import { useDispatch, useSelector } from "react-redux";
 import {
   View,
   Text,
   ActivityIndicator,
   FlatList,
-  TouchableOpacity
+  TouchableOpacity,
 } from "react-native";
 import { Avatar, Icon } from "react-native-elements";
 import theme from "../../Theme.json";
@@ -17,7 +17,7 @@ const Item = ({ item, navigation }) => {
     <TouchableOpacity
       onPress={() => {
         navigation.navigate("Read", {
-          user: item
+          item,
         });
       }}
     >
@@ -30,7 +30,7 @@ const Item = ({ item, navigation }) => {
           borderBottomWidth: 1,
           borderBottomColor: theme.colors.grey4,
           paddingVertical: 12,
-          flexDirection: "row"
+          flexDirection: "row",
         }}
       >
         <View
@@ -38,20 +38,20 @@ const Item = ({ item, navigation }) => {
             alignContent: "center",
             justifyContent: "center",
             alignItems: "center",
-            marginRight: 12
+            marginRight: 12,
           }}
         >
-          {item.avatar ? (
+          {item?.avatar ? (
             <Avatar
               source={{
-                uri: `https://siee-gate.herokuapp.com/api/files/avatar/${item.avatar?.filename}`
+                uri: `https://siee-gate.herokuapp.com/api/files/avatar/${item?.avatar?.filename}`,
               }}
               size="medium"
             />
           ) : (
             <Avatar
               size="medium"
-              title={item.firstname[0].concat(item.lastname[0]).toUpperCase()}
+              title={item?.firstname[0].concat(item?.lastname[0]).toUpperCase()}
             />
           )}
         </View>
@@ -60,21 +60,21 @@ const Item = ({ item, navigation }) => {
             style={{
               textAlignVertical: "bottom",
               fontWeight: "bold",
-              fontSize: 16
+              fontSize: 16,
             }}
           >
-            {_.capitalize(item.firstname)} {_.capitalize(item.lastname)}
+            {_.capitalize(item?.firstname)} {_.capitalize(item?.lastname)}
           </Text>
           <View style={{ flexDirection: "row", flex: 1, alignItems: "center" }}>
             <Icon name="account-card-details" size={20} />
             <Text style={{ textAlignVertical: "bottom", marginStart: 8 }}>
-              {item.jobTitle} chez {item.organisation}
+              {item?.jobTitle} chez {item?.organisation}
             </Text>
           </View>
           <View style={{ flexDirection: "row", flex: 1, alignItems: "center" }}>
             <Icon name="school" size={20} />
             <Text style={{ textAlignVertical: "bottom", marginStart: 8 }}>
-              SIEE promotion {item.promo}
+              SIEE promotion {item?.promo}
             </Text>
           </View>
         </View>
@@ -83,10 +83,12 @@ const Item = ({ item, navigation }) => {
   );
 };
 
-const PeopleScreen = ({ users, fetchUsers, navigation }) => {
+const PeopleScreen = ({ navigation }) => {
+  const dispatch = useDispatch();
+  const { users, auth } = useSelector((state) => state);
   useEffect(() => {
     function fetchData() {
-      fetchUsers();
+      dispatch(fetchUsers());
     }
     fetchData();
   }, []);
@@ -101,13 +103,13 @@ const PeopleScreen = ({ users, fetchUsers, navigation }) => {
             shadowColor: "black",
             shadowOpacity: 0.3,
             elevation: 2,
-            backgroundColor: "white"
+            backgroundColor: "white",
           }}
-          data={users.users}
+          data={users.users.filter((user) => user._id !== auth.user._id)}
           renderItem={({ item }) => (
             <Item item={item} navigation={navigation} />
           )}
-          keyExtractor={item => item._id}
+          keyExtractor={(item) => item?._id}
         />
       ) : (
         <View
@@ -120,15 +122,4 @@ const PeopleScreen = ({ users, fetchUsers, navigation }) => {
   );
 };
 
-const mapStateToProps = state => ({
-  auth: state.auth,
-  users: state.users
-});
-
-const mapDispatchToProps = dispatch => {
-  return {
-    fetchUsers: () => dispatch(fetchUsers())
-  };
-};
-
-export default connect(mapStateToProps, mapDispatchToProps)(PeopleScreen);
+export default PeopleScreen;

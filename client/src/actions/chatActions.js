@@ -1,6 +1,4 @@
 export const sendMessage = (message) => {
-  console.log(message);
-
   return {
     type: "SOCKET",
     event: "message",

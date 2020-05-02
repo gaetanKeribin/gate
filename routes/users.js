@@ -4,11 +4,10 @@ const User = require("../models/user");
 const { authenticate } = require("../middleware/authenticate");
 
 router.get("/", authenticate, async (req, res, next) => {
-  console.log("usersController fetchUsers");
-
   try {
     const users = await User.find();
 
+    console.log("Users fetched");
     res.status(200).send({ users });
   } catch (err) {
     next(err);

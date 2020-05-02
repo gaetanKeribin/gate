@@ -133,8 +133,6 @@ export default function (state = initialState, action) {
     case "REQUEST_UPDATE_PASSWORD:SUCCESS":
       return { ...state, updatePasswordError: null };
     case "REQUEST_UPDATE_JOB:SUCCESS":
-      console.log(action.data);
-
       return {
         ...state,
         user: { ...state.user, jobs: action.data.jobs },
