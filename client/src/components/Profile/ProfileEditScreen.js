@@ -20,7 +20,6 @@ const ProfileEditScreen = ({
   const [jobTitle, setJobTitle] = useState(auth.user.jobTitle);
   const [organisation, setOrganisation] = useState(auth.user.organisation);
   const [promo, setPromo] = useState(`${auth.user.promo}`);
-  const [student, setStudent] = useState(auth.user.student);
   const [alumni, setAlumni] = useState(auth.user.alumni);
   const [professor, setProfessor] = useState(auth.user.professor);
   const [governance, setGovernance] = useState(auth.user.governance);
@@ -106,38 +105,21 @@ const ProfileEditScreen = ({
                     textAlignVertical: "center",
                   }}
                 >
-                  Etudiant
+                  Etudiant ou alumni
                 </Text>
                 <Switch
-                  value={asap}
-                  onValueChange={(value) => setAsap(value)}
+                  value={alumni}
+                  onValueChange={(value) => setAlumni(value)}
                 />
               </View>
-              <View
-                style={{
-                  marginBottom: 12,
-                  flexDirection: "row",
-                  display: "flex",
-                  height: 40,
-                }}
-              >
-                <Text
-                  style={{
-                    color: theme.colors.grey3,
-                    fontWeight: "bold",
-                    paddingLeft: 10,
-                    fontSize: 16,
-                    flex: 1,
-                    textAlignVertical: "center",
-                  }}
-                >
-                  Alumni
-                </Text>
-                <Switch
-                  value={asap}
-                  onValueChange={(value) => setAsap(value)}
+              {alumni && (
+                <Input
+                  label="Promotion"
+                  value={promo}
+                  onChangeText={(text) => setPromo(text)}
+                  leftIcon={<Icon name="school" />}
                 />
-              </View>
+              )}
               <View
                 style={{
                   marginBottom: 12,
@@ -159,8 +141,8 @@ const ProfileEditScreen = ({
                   Membre du corps professoral
                 </Text>
                 <Switch
-                  value={asap}
-                  onValueChange={(value) => setAsap(value)}
+                  value={professor}
+                  onValueChange={(value) => setProfessor(value)}
                 />
               </View>
               <View
@@ -184,8 +166,8 @@ const ProfileEditScreen = ({
                   Membre du corps administratif
                 </Text>
                 <Switch
-                  value={asap}
-                  onValueChange={(value) => setAsap(value)}
+                  value={governance}
+                  onValueChange={(value) => setGovernance(value)}
                 />
               </View>
               {(student || alumni) && (
