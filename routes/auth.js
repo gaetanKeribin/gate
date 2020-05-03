@@ -74,11 +74,11 @@ router.delete("/", authenticate, async (req, res, next) => {
 router.patch("/", authenticate, async (req, res, next) => {
   const { description, jobTitle, organisation, promo, email } = req.body;
   try {
-    if (description) req.user.description = description;
-    if (promo) req.user.promo = promo;
-    if (jobTitle) req.user.jobTitle = jobTitle;
-    if (organisation) req.user.organisation = organisation;
-    if (email) req.user.email = email;
+    req.user.description = description;
+    req.user.promo = promo;
+    req.user.jobTitle = jobTitle;
+    req.user.organisation = organisation;
+    req.user.email = email;
     await req.user.save();
     console.log("User updated");
     res.status(200).send({ user: req.user });

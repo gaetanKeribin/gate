@@ -116,14 +116,13 @@ const InputForm = ({ form, dispatchRedirectReset, theme, dispatch }) => {
           }
           disabled={!inputValue}
           type="clear"
-          onPress={async () => {
-            await dispatch(
+          onPress={() => {
+            dispatch(
               form.action({
                 [form.inputName]: inputValue,
                 ...form.actionParams,
               })
             );
-            dispatchRedirectReset();
           }}
         />
       </View>
@@ -150,9 +149,8 @@ const Menu = ({ menu, dispatchRedirectReset, dispatch }) => {
             title={button.title}
             key={i}
             containerStyle={{ height: 30 }}
-            onPress={async () => {
-              await dispatch(button.action(...button.actionParams));
-              dispatchRedirectReset();
+            onPress={() => {
+              dispatch(button.action(...button.actionParams));
             }}
           />
         );

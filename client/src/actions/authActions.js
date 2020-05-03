@@ -27,7 +27,6 @@ export const signUp = (credentials) => {
       message: `Bienvenue ! Rendez-vous à l'onglet "Mon profil" pour éditer vos informations.`,
       variant: "success",
       redirect: "Main",
-      timeout: 3000,
     },
     errorNotification: true,
   };
@@ -52,7 +51,6 @@ export const updateUser = (user) => {
       message: "Vos informations ont été mises à jour.",
       variant: "success",
       redirect: "Read",
-      timeout: 1000,
     },
     errorNotification: true,
   };
@@ -65,10 +63,9 @@ export const updateUserPassword = (password, newPassword) => {
     route: "auth/password",
     payload: { password, newPassword },
     successNotification: {
-      message: "Votre mot de passe à été mises à jour.",
+      message: "Votre mot de passe à été mis à jour.",
       variant: "success",
       redirect: "Read",
-      timeout: 1000,
     },
     errorNotification: true,
   };
@@ -82,7 +79,6 @@ export const deleteAccount = () => {
     successNotification: {
       message: "Votre compte a bien été supprimé.",
       variant: "success",
-      timeout: 1000,
     },
     errorNotification: true,
   };

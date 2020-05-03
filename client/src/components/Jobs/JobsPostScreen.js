@@ -114,14 +114,13 @@ const PostScreen = ({}) => {
             label="Expérience"
             placeholder="Années passées dans un poste similaire"
             value={minExp}
-            keyboardType="number-pad"
+            keyboardType="numeric"
             onChangeText={(value) => setMinExp(value)}
             errorMessage={errors.minExp}
           />
           <Input
             label="Rémunération"
             placeholder="En €"
-            keyboardType="decimal-pad"
             value={salary}
             onChangeText={(value) => setSalary(value)}
             showSoftInputOnFocus={false}

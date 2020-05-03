@@ -10,7 +10,10 @@ router.get("/", authenticate, async (req, res, next) => {
   console.log("jobsController fetchAllJobs");
 
   try {
-    const jobs = await Job.find({});
+    const jobs = await Job.find({}).populate(
+      "publisher",
+      "-password -tokens -sockets -jobs"
+    );
 
     res.status(200).send({ jobs: jobs.reverse() });
   } catch (err) {
