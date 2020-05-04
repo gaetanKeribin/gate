@@ -49,18 +49,18 @@ export default function (state = initialState, action) {
         conversations: [
           {
             ...state.conversations.filter(
-              (conv) => conv._id === action.conversation._id
+              (conv) => conv._id === action.message.conversation_id
             )[0],
             lastMessage: action.message,
             messages: [
               action.message,
               ...state.conversations.filter(
-                (conv) => conv._id === action.conversation._id
+                (conv) => conv._id === action.message.conversation_id
               )[0].messages,
             ],
           },
           ...state.conversations.filter(
-            (conv) => conv._id !== action.conversation._id
+            (conv) => conv._id !== action.message.conversation_id
           ),
         ],
         isLoaded: true,
