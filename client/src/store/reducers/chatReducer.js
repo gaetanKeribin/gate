@@ -42,7 +42,7 @@ export default function (state = initialState, action) {
         lastUpdatedAt: action.receivedAt,
       };
     case "PRIVATE_MESSAGE_ACK":
-    case "RECEIVE_MESSAGE":
+    case "RECEIVE_PRIVATE_MESSAGE":
       return {
         ...state,
         lastUpdatedAt: action.receivedAt,

@@ -8,7 +8,7 @@ import { createBottomTabNavigator } from "@react-navigation/bottom-tabs";
 import { createStackNavigator } from "@react-navigation/stack";
 import { createDrawerNavigator } from "@react-navigation/drawer";
 import { ThemeProvider, Icon } from "react-native-elements";
-import { SplashScreen } from "expo";
+import { AppLoading, SplashScreen } from "expo";
 
 import MyJobs from "./components/MyJobs";
 import Jobs from "./components/Jobs";
@@ -100,48 +100,59 @@ const DrawerStack = () => {
   );
 };
 
-const AppStack = () => {
+const AppStack = (props) => {
+  const [isLoadingComplete, setLoadingComplete] = React.useState(false);
+  const [isSplashReady, setSplashReady] = React.useState(false);
   const [initialNavigationState, setInitialNavigationState] = React.useState();
-  const containerRef = React.useRef();
+  const { getInitialState } = useLinking(navigationRef);
   const dispatch = useDispatch();
 
   const userToken = useSelector((state) => state.auth.token, shallowEqual);
+
   React.useEffect(() => {
-    const bootstrapAsync = async () => {
+    async function loadResourcesAndDataAsync() {
       if (userToken !== null) {
         dispatch(verifyToken());
       }
-    };
-    bootstrapAsync();
+      try {
+        SplashScreen.preventAutoHide();
+
+        setInitialNavigationState(await getInitialState());
+      } catch (e) {
+        // We might want to provide this error information to an error reporting service
+        console.warn(e);
+      } finally {
+        setLoadingComplete(true);
+        SplashScreen.hide();
+      }
+    }
+
+    loadResourcesAndDataAsync();
   }, []);
 
-  const linking = {
-    prefixes: ["https://mychat.com", "mychat://"],
-    config: {
-      Home: "feed/:sort",
-    },
-  };
-
-  return (
-    <NavigationContainer
-      ref={navigationRef}
-      linking={useLinking}
-      initialState={initialNavigationState}
-    >
-      <View
-        style={{
-          maxWidth: 500,
-          flex: 1,
-        }}
+  if (!isLoadingComplete && !props.skipLoadingScreen) {
+    return null;
+  } else {
+    return (
+      <NavigationContainer
+        ref={navigationRef}
+        initialState={initialNavigationState}
       >
-        <Switch.Navigator headerMode="none">
-          {userToken && <Switch.Screen name="Root" component={DrawerStack} />}
-          {!userToken && <Switch.Screen name="Auth" component={Auth} />}
-        </Switch.Navigator>
-        <CustomOverlay />
-      </View>
-    </NavigationContainer>
-  );
+        <View
+          style={{
+            maxWidth: 500,
+            flex: 1,
+          }}
+        >
+          <Switch.Navigator headerMode="none">
+            {userToken && <Switch.Screen name="Root" component={DrawerStack} />}
+            {!userToken && <Switch.Screen name="Auth" component={Auth} />}
+          </Switch.Navigator>
+          <CustomOverlay />
+        </View>
+      </NavigationContainer>
+    );
+  }
 };
 
 const App = () => {
