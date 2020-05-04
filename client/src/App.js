@@ -8,7 +8,7 @@ import { createBottomTabNavigator } from "@react-navigation/bottom-tabs";
 import { createStackNavigator } from "@react-navigation/stack";
 import { createDrawerNavigator } from "@react-navigation/drawer";
 import { ThemeProvider, Icon } from "react-native-elements";
-import { AppLoading, SplashScreen } from "expo";
+import { SplashScreen } from "expo";
 
 import MyJobs from "./components/MyJobs";
 import Jobs from "./components/Jobs";

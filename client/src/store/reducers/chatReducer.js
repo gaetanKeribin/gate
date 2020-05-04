@@ -56,7 +56,7 @@ export default function (state = initialState, action) {
               action.message,
               ...state.conversations.filter(
                 (conv) => conv._id === action.message.conversation_id
-              )[0].messages,
+              )[0]?.messages,
             ],
           },
           ...state.conversations.filter(
