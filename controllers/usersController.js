@@ -40,8 +40,7 @@ exports.findSocketsFromUserIds = async function (data) {
         });
       });
       return sockets;
-    } else if (typeof data === "String") {
-      console.log(data);
+    } else {
       const { sockets } = await User.findById(data).select("sockets -_id");
       return sockets;
     }

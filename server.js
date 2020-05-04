@@ -113,10 +113,10 @@ io.on("connection", async function (socket) {
     const message = await saveMessageToConversation(data);
 
     const recipientSockets = await findSocketsFromUserIds(message.recipient);
-    console.log("Emiting to sockets: ", recipientSockets);
 
     if (recipientSockets) {
       recipientSockets.forEach((element) => {
+        console.log("Emiting to socket: ", element);
         io.to(`${element.id}`).emit("private-message", { message });
       });
     }
