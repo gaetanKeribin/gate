@@ -146,7 +146,6 @@ const mapStateToProps = (state) => {
 
 const mapDispatchToProps = (dispatch) => {
   return {
-    sendMessage: (message) => dispatch(sendMessage(message)),
     fetchConversation: (conversation_id) =>
       dispatch(fetchConversation(conversation_id)),
   };

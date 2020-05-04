@@ -1,5 +1,5 @@
 import React, { useState, useEffect, useCallback, useContext } from "react";
-import { connect, useDispatch, useSelector } from "react-redux";
+import { useDispatch, useSelector } from "react-redux";
 import {
   View,
   Text,
@@ -20,11 +20,7 @@ import _ from "lodash";
 import "moment/locale/fr";
 import moment from "moment";
 import { fetchUsers } from "../../actions/usersActions";
-import {
-  fetchConversations,
-  sendMessage,
-  deleteConversation,
-} from "../../actions/chatActions";
+import { fetchConversations } from "../../actions/chatActions";
 import { apiConfig } from "../../config";
 import { showOverlay } from "../../actions/overlayAction";
 
