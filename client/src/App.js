@@ -21,6 +21,9 @@ import theme from "./Theme.json";
 import { navigationRef, isMountedRef } from "./RootNavigation";
 import { verifyToken } from "./actions/authActions";
 import useLinking from "./useLinking";
+import { fetchJobs, fetchMyJobs } from "./actions/jobsActions";
+import { fetchUsers } from "./actions/usersActions";
+import { fetchConversations } from "./actions/chatActions";
 
 const BottomTab = createBottomTabNavigator();
 const Drawer = createDrawerNavigator();
@@ -79,6 +82,17 @@ const MainStack = () => {
 };
 
 const DrawerStack = () => {
+  const dispatch = useDispatch();
+  React.useEffect(() => {
+    function fetchData() {
+      dispatch(fetchJobs());
+      dispatch(fetchMyJobs());
+      dispatch(fetchUsers());
+      dispatch(fetchConversations());
+    }
+
+    fetchData();
+  }, []);
   return (
     <Drawer.Navigator initialRouteName="Main" headerMode="screen">
       <Drawer.Screen

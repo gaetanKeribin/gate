@@ -69,9 +69,8 @@ export const socketMiddleware = () => {
         });
       });
     }
-    if (action.type.substring(0, 6) === "SOCKET") {
+    if (action.type?.substring(0, 6) === "SOCKET") {
       socket.emit(action.event, action.payload);
-      store.dispatch({ type: action.callbacks, ...action.payload });
     }
     if (action.type === "REQUEST_LOG_OUT:SUCCESS") {
       socket.disconnect();
@@ -84,8 +83,8 @@ export const socketMiddleware = () => {
 
 export const axiosMiddleware = (store) => (next) => (action) => {
   if (
-    action.type.substring(0, 7) === "REQUEST" &&
-    action.type.includes(":") === false
+    action.type?.substring(0, 7) === "REQUEST" &&
+    action.type?.includes(":") === false
   ) {
     let https;
     if (action.type.substring(0, 14) === "REQUEST_UPLOAD") {

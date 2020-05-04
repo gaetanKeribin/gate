@@ -10,6 +10,7 @@ const SignUpScreen = ({ signUp, auth }) => {
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
   const [confirmation, setConfirmation] = useState("");
+  const [code, setCode] = useState("");
   const [errors, setErrors] = useState({});
 
   const handleSignUp = async () => {
@@ -27,7 +28,7 @@ const SignUpScreen = ({ signUp, auth }) => {
       });
     }
     setErrors({});
-    signUp({ email, password, firstname, lastname });
+    signUp({ email, password, firstname, lastname, code });
   };
 
   return (
@@ -92,6 +93,14 @@ const SignUpScreen = ({ signUp, auth }) => {
         containerStyle={{ marginBottom: 40, marginTop: 8 }}
         onChangeText={(value) => setConfirmation(value)}
         errorMessage={errors.confirmation}
+      />
+      <Input
+        placeholder="Code"
+        leftIcon={<Icon name="code-tags" type="material-community" />}
+        value={code}
+        onChangeText={(value) => setCode(value)}
+        label="Email"
+        errorMessage={errors.code}
       />
       <Button
         title="S'inscrire"

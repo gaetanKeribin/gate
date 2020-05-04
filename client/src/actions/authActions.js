@@ -1,7 +1,3 @@
-import { fetchConversations } from "./chatActions";
-import { fetchUsers } from "./usersActions";
-import { fetchMyJobs, fetchJobs } from "./jobsActions";
-
 export const logIn = (credentials) => {
   return {
     type: "REQUEST_LOG_IN",
@@ -9,11 +5,6 @@ export const logIn = (credentials) => {
     payload: credentials,
     method: "POST",
     errorNotification: true,
-    successNotification: {
-      message: `Bonjour !`,
-      redirect: "Root",
-      callbacks: [fetchConversations, fetchUsers, fetchMyJobs, fetchJobs],
-    },
   };
 };
 
