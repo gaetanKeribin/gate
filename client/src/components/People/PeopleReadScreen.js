@@ -9,11 +9,11 @@ import { showOverlay } from "../../actions/overlayAction";
 import { startPrivateConversation } from "../../actions/chatActions";
 
 const PeopleScreen = ({ route, navigation }) => {
-  const { chat, auth } = useSelector((state) => state);
+  const { auth } = useSelector((state) => state);
   const dispatch = useDispatch();
   const { item } = route.params;
-
-  console.log(auth);
+  const fullname =
+    _.capitalize(item?.firstname) + " " + _.capitalize(item?.lastname);
 
   return (
     <View
@@ -153,12 +153,12 @@ const PeopleScreen = ({ route, navigation }) => {
             let a = auth.user.privateConversations.filter(
               (c) => c.interlocutor_id === item._id
             );
-            console.log(a);
 
             if (a.length > 0) {
               navigation.navigate("Messages", {
                 screen: "Room",
                 params: {
+                  title: fullname,
                   conversation_id: a[0].conversation_id,
                 },
               });

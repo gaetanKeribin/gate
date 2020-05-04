@@ -51,8 +51,6 @@ exports.saveMessageToConversation = async (data) => {
       },
     });
 
-    console.log(message);
-
     await message.save();
 
     return message;

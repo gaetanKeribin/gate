@@ -22,28 +22,15 @@ const MessagesScreen = ({ navigation }) => {
           name="Room"
           component={Room}
           options={({ route }) => {
-            const { conversation } = route.params;
-            if (!route.params.title) {
-              let title;
-              if (conversation?.participants?.length > 1) {
-              } else if (conversation?.participants?.length === 1) {
-                title =
-                  _.capitalize(conversation?.participants[0]?.firstname) +
-                  " " +
-                  _.capitalize(conversation?.participants[0]?.lastname);
-              } else {
-                return {
-                  title: "Compte supprimé",
-                  headerStatusBarHeight: 0,
-                };
-              }
+            const { title } = route.params;
+            if (!title) {
               return {
-                title,
+                title: "Compte supprimé",
                 headerStatusBarHeight: 0,
               };
             } else {
               return {
-                title: route.params.title,
+                title: title,
                 headerStatusBarHeight: 0,
               };
             }
