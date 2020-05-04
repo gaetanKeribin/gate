@@ -124,7 +124,7 @@ io.on("connection", async function (socket) {
 
 // Website server
 
-if (process.env.NODE_ENV === "production") {
+if (process.env.NODE_ENV === "test") {
   app.use(express.static("client/web-build"));
 }
 
