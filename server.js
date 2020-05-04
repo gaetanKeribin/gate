@@ -5,12 +5,16 @@ const filesRouter = require("./routes/files");
 const authRouter = require("./routes/auth");
 const conversationsRouter = require("./routes/conversations");
 const { matchTokenWithUser } = require("./middleware/authenticate");
-const { saveMessageInDb } = require("./controllers/messagesController");
+const {
+  saveMessageToConversation,
+  createNewConversation,
+} = require("./controllers/messagesController");
 const {
   saveSocketToUser,
   removeSocketFromUser,
-  findSocketsWithUsers,
+  findSocketsFromUserIds,
 } = require("./controllers/usersController");
+const User = require("./models/user");
 
 const app = express();
 
@@ -66,28 +70,55 @@ io.on("connection", async function (socket) {
     await removeSocketFromUser(socket);
     console.log(`socket ${socket.id} disconnected`);
   });
-  socket.on("message", async function (message) {
-    console.log("message received");
-    message.sender = socket.user._id;
-    if (!message.text) {
+
+  socket.on("private-conversation", async (data) => {
+    console.log("Someone wants to start a new conversation");
+    data.sender = socket.user._id;
+    if (!data.text) {
       throw new Error("no text in message");
-    } else if (!message.recipients && !message.conversation_id) {
-      throw new Error("no recipients nor conversation_id");
+    } else if (!data.recipient) {
+      throw new Error("no recipient");
     }
-    const { conversation, savedMessage, newConv } = await saveMessageInDb(
-      message,
-      socket.user
+
+    const recipient = await User.findById(data.recipient).select(
+      "-id -password -tokens"
     );
-    const recipientsSockets = await findSocketsWithUsers(
-      conversation.participants
+
+    const { conversation, message } = await createNewConversation(
+      data,
+      socket.user,
+      recipient
     );
-    recipientsSockets.forEach((socketId) => {
-      io.to(`${socketId}`).emit("message", {
-        message: savedMessage,
+
+    // Sends conversation
+    recipient.sockets.forEach((element) => {
+      io.to(`${element}`).emit("private-conversation", {
         conversation,
-        newConv,
+        message,
       });
     });
+
+    // Sends acknowledgment
+    socket.emit("private-conversation-ack", { conversation, message });
+  });
+
+  socket.on("private-message", async (data) => {
+    console.log("Someone wants to send a private message");
+    data.sender = socket.user._id;
+    if (!data.text) {
+      throw new Error("no text in message");
+    } else if (!data.conversation_id) {
+      throw new Error("no conversation_id");
+    }
+    const message = await saveMessageToConversation(data);
+
+    const recipientSockets = await findSocketsFromUserIds(message.recipient);
+    if (recipientSockets) {
+      recipientSockets.forEach((element) => {
+        io.to(`${element}`).emit("private-message", { message });
+      });
+    }
+    socket.emit("private-message-ack", { message });
   });
 });
 

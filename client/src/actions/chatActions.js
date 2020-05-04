@@ -1,11 +1,24 @@
-export const sendMessage = (message) => {
+export const sendPrivateMessage = (message) => {
   return {
     type: "SOCKET",
-    event: "message",
+    event: "private-message",
     payload: {
       ...message,
       sentAt: new Date(),
     },
+    dispatchCallback: "SEND_PRIVATE_MESSAGE",
+  };
+};
+
+export const startPrivateConversation = (message) => {
+  return {
+    type: "SOCKET",
+    event: "private-conversation",
+    payload: {
+      ...message,
+      sentAt: new Date(),
+    },
+    dispatchCallback: "START_PRIVATE_CONVERSATION",
   };
 };
 
@@ -30,15 +43,6 @@ export const deleteConversation = (conversation_id) => {
     type: "REQUEST_DELETE_CONVERSATION",
     method: "DELETE",
     route: `conversations/${conversation_id}`,
-    successNotification: {
-      message: "Conversation supprimée",
-      variant: "information",
-      timeout: 1000,
-    },
-    errorNotification: {
-      message: "Cela n'a pas marché... Essayez de nouveau.",
-      variant: "error",
-      timeout: 2000,
-    },
+    errorNotification: true,
   };
 };

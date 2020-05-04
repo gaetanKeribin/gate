@@ -123,6 +123,7 @@ const InputForm = ({ form, dispatchRedirectReset, theme, dispatch }) => {
                 ...form.actionParams,
               })
             );
+            dispatchRedirectReset();
           }}
         />
       </View>
@@ -151,6 +152,7 @@ const Menu = ({ menu, dispatchRedirectReset, dispatch }) => {
             containerStyle={{ height: 30 }}
             onPress={() => {
               dispatch(button.action(...button.actionParams));
+              dispatchRedirectReset();
             }}
           />
         );
@@ -166,10 +168,10 @@ const CustomOverlay = () => {
   if (overlay.show === false) return null;
 
   const dispatchRedirectReset = () => {
+    dispatch(resetOverlay());
     typeof overlay.dispatchCallback === "function" &&
       dispatch(overlay.dispatchCallback());
     overlay.redirect && RootNavigation.navigate(overlay.redirect, {});
-    dispatch(resetOverlay());
   };
 
   overlay.timeout &&

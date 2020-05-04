@@ -78,7 +78,7 @@ export const deleteAccount = () => {
     route: "auth",
     successNotification: {
       message: "Votre compte a bien été supprimé.",
-      variant: "success",
+      redirect: "Auth",
     },
     errorNotification: true,
   };

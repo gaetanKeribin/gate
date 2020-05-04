@@ -1,7 +1,7 @@
 import React, { useState, useContext } from "react";
 import { connect } from "react-redux";
 import { Icon, Button, Input, ThemeContext } from "react-native-elements";
-import { View, ScrollView, Text, TouchableOpacity } from "react-native";
+import { View, ScrollView, Text, TouchableOpacity, Switch } from "react-native";
 import {
   updateUser,
   deleteAccount,
@@ -19,7 +19,7 @@ const ProfileEditScreen = ({
   const [email, setEmail] = useState(auth.user.email);
   const [jobTitle, setJobTitle] = useState(auth.user.jobTitle);
   const [organisation, setOrganisation] = useState(auth.user.organisation);
-  const [promo, setPromo] = useState(`${auth.user.promo}`);
+  const [promo, setPromo] = useState(`${auth.user.promo || ""}`);
   const [alumni, setAlumni] = useState(auth.user.alumni);
   const [professor, setProfessor] = useState(auth.user.professor);
   const [governance, setGovernance] = useState(auth.user.governance);
@@ -39,6 +39,9 @@ const ProfileEditScreen = ({
       jobTitle,
       organisation,
       promo,
+      alumni,
+      professor,
+      governance,
     });
   };
 
@@ -105,7 +108,7 @@ const ProfileEditScreen = ({
                     textAlignVertical: "center",
                   }}
                 >
-                  Etudiant ou alumni
+                  Diplomé
                 </Text>
                 <Switch
                   value={alumni}
@@ -170,14 +173,6 @@ const ProfileEditScreen = ({
                   onValueChange={(value) => setGovernance(value)}
                 />
               </View>
-              {(student || alumni) && (
-                <Input
-                  label="Promotion"
-                  value={promo}
-                  onChangeText={(text) => setPromo(text)}
-                  leftIcon={<Icon name="school" />}
-                />
-              )}
               <Input
                 value={organisation}
                 label="Organisation"

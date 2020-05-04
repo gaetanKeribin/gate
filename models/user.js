@@ -91,12 +91,17 @@ const userSchema = new mongoose.Schema({
     },
   ],
   jobs: [{ type: mongoose.Schema.Types.ObjectId, ref: "Job" }],
-  posts: [{ type: mongoose.Schema.Types.ObjectId, ref: "Post" }],
-  conversations: [
-    { type: mongoose.Schema.Types.ObjectId, ref: "Conversations" },
-  ],
-  hasPrivateConversationWith: [
-    { type: mongoose.Schema.Types.ObjectId, ref: "User" },
+  privateConversations: [
+    {
+      conversation_id: {
+        type: mongoose.Schema.Types.ObjectId,
+        ref: "Conversations",
+      },
+      interlocutor_id: {
+        type: mongoose.Schema.Types.ObjectId,
+        ref: "User",
+      },
+    },
   ],
 });
 
@@ -136,6 +141,28 @@ userSchema.statics.findByCredentials = async (email, password) => {
     throw new Error("Mot de passe incorrect.");
   }
   return user;
+};
+
+userSchema.statics.findSocketsFromUserIds = async function (data) {
+  try {
+    if (typeof data === "Array") {
+      const sockets = [];
+      const users = await User.find({ _id: { $in: data } }).select(
+        "sockets -_id"
+      );
+      users.forEach((user) => {
+        user.sockets.forEach((socket) => {
+          sockets.push(socket.socketId);
+        });
+      });
+      return sockets;
+    } else if (typeof data === "String") {
+      const sockets = await User.findById(data).select("sockets -_id").sockets;
+      return sockets;
+    }
+  } catch (err) {
+    console.log(err);
+  }
 };
 
 userSchema.pre("save", async function (next) {

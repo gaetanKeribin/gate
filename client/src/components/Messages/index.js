@@ -26,11 +26,16 @@ const MessagesScreen = ({ navigation }) => {
             if (!route.params.title) {
               let title;
               if (conversation?.participants?.length > 1) {
-              } else {
+              } else if (conversation?.participants?.length === 1) {
                 title =
                   _.capitalize(conversation?.participants[0]?.firstname) +
                   " " +
                   _.capitalize(conversation?.participants[0]?.lastname);
+              } else {
+                return {
+                  title: "Compte supprimé",
+                  headerStatusBarHeight: 0,
+                };
               }
               return {
                 title,

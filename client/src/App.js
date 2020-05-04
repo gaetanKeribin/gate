@@ -1,12 +1,15 @@
 import React from "react";
 import { Provider, useSelector, shallowEqual, useDispatch } from "react-redux";
-import { View, SafeAreaView, Platform, StatusBar } from "react-native";
+import { SafeAreaView, Platform, StatusBar } from "react-native";
 import { store, persistor } from "./store/index";
 import { PersistGate } from "redux-persist/integration/react";
 import { NavigationContainer } from "@react-navigation/native";
 import { createBottomTabNavigator } from "@react-navigation/bottom-tabs";
+import { createStackNavigator } from "@react-navigation/stack";
 import { createDrawerNavigator } from "@react-navigation/drawer";
 import { ThemeProvider, Icon } from "react-native-elements";
+import { SplashScreen } from "expo";
+
 import MyJobs from "./components/MyJobs";
 import Jobs from "./components/Jobs";
 import Profile from "./components/Profile";
@@ -17,9 +20,11 @@ import CustomOverlay from "./components/CustomOverlay";
 import theme from "./Theme.json";
 import { navigationRef, isMountedRef } from "./RootNavigation";
 import { verifyToken } from "./actions/authActions";
+import useLinking from "./useLinking";
 
 const BottomTab = createBottomTabNavigator();
 const Drawer = createDrawerNavigator();
+const Switch = createStackNavigator();
 
 const MainStack = () => {
   return (
@@ -73,7 +78,31 @@ const MainStack = () => {
   );
 };
 
+const DrawerStack = () => {
+  return (
+    <Drawer.Navigator initialRouteName="Main" headerMode="screen">
+      <Drawer.Screen
+        name="Main"
+        component={MainStack}
+        options={{ title: "Accueil" }}
+      />
+      <Drawer.Screen
+        name="Profile"
+        component={Profile}
+        options={{ title: "Mon profil" }}
+      />
+      <Drawer.Screen
+        name="MyJobs"
+        component={MyJobs}
+        options={{ title: "Mes offres d'emplois" }}
+      />
+    </Drawer.Navigator>
+  );
+};
+
 const AppStack = () => {
+  const [initialNavigationState, setInitialNavigationState] = React.useState();
+  const containerRef = React.useRef();
   const dispatch = useDispatch();
 
   const userToken = useSelector((state) => state.auth.token, shallowEqual);
@@ -86,35 +115,25 @@ const AppStack = () => {
     bootstrapAsync();
   }, []);
 
+  const linking = {
+    prefixes: ["https://mychat.com", "mychat://"],
+    config: {
+      Home: "feed/:sort",
+    },
+  };
+
   return (
-    <View
-      style={{
-        flex: 1,
-        maxWidth: 500,
-      }}
+    <NavigationContainer
+      ref={navigationRef}
+      linking={linking}
+      initialState={initialNavigationState}
     >
-      {userToken ? (
-        <Drawer.Navigator initialRouteName="Main" headerMode="screen">
-          <Drawer.Screen
-            name="Main"
-            component={MainStack}
-            options={{ title: "Accueil" }}
-          />
-          <Drawer.Screen
-            name="Profile"
-            component={Profile}
-            options={{ title: "Mon profil" }}
-          />
-          <Drawer.Screen
-            name="MyJobs"
-            component={MyJobs}
-            options={{ title: "Mes offres d'emplois" }}
-          />
-        </Drawer.Navigator>
-      ) : (
-        <Auth />
-      )}
-    </View>
+      <Switch.Navigator headerMode="none">
+        {userToken && <Switch.Screen name="Root" component={DrawerStack} />}
+        {!userToken && <Switch.Screen name="Auth" component={Auth} />}
+      </Switch.Navigator>
+      <CustomOverlay />
+    </NavigationContainer>
   );
 };
 
@@ -136,10 +155,7 @@ const App = () => {
             }}
           >
             {Platform.OS === "ios" && <StatusBar barStyle="default" />}
-            <NavigationContainer ref={navigationRef}>
-              <AppStack />
-              <CustomOverlay />
-            </NavigationContainer>
+            <AppStack />
           </SafeAreaView>
         </ThemeProvider>
       </PersistGate>

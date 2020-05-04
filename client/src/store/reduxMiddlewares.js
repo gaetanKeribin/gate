@@ -11,6 +11,9 @@ export const devMiddleware = (store) => (next) => (action) => {
 export const socketMiddleware = () => {
   let socket;
   return (store) => (next) => (action) => {
+    if (!socket && store.getState().auth.isLoggedIn) {
+      console.log("socket somehow disconnected");
+    }
     if (
       action.type === "REQUEST_LOG_IN:SUCCESS" ||
       action.type === "REQUEST_SIGN_UP:SUCCESS" ||
@@ -37,25 +40,44 @@ export const socketMiddleware = () => {
       socket.on("authenticated", (data) => {
         console.log("Socket authenticated");
       });
-      socket.on("message", (data) => {
+      socket.on("private-conversation", (data) => {
         store.dispatch({
-          type: "RECEIVE_MESSAGE",
-          message: data.message,
-          conversation: data.conversation,
-          newConv: data.newConv,
+          type: "RECEIVE_PRIVATE_CONVERSATION",
+          ...data,
+          receivedAt: new Date(),
+        });
+      });
+      socket.on("private-conversation-ack", (data) => {
+        store.dispatch({
+          type: "PRIVATE_CONVERSATION_ACK",
+          ...data,
+          receivedAt: new Date(),
+        });
+      });
+      socket.on("private-message", (data) => {
+        store.dispatch({
+          type: "RECEIVE_PRIVATE_MESSAGE",
+          ...data,
+          receivedAt: new Date(),
+        });
+      });
+      socket.on("private-message-ack", (data) => {
+        store.dispatch({
+          type: "PRIVATE_MESSAGE_ACK",
+          ...data,
           receivedAt: new Date(),
         });
       });
     }
-    if (socket) {
-      if (action.type.substring(0, 6) === "SOCKET") {
-        socket.emit(action.event, action.payload);
-      }
-      if (action.type === "REQUEST_LOG_OUT:SUCCESS") {
-        socket.disconnect();
-        console.log("socket disconnected");
-      }
+    if (action.type.substring(0, 6) === "SOCKET") {
+      socket.emit(action.event, action.payload);
+      store.dispatch({ type: action.dispatchCallback, ...action.payload });
     }
+    if (action.type === "REQUEST_LOG_OUT:SUCCESS") {
+      socket.disconnect();
+      console.log("socket disconnected");
+    }
+
     return next(action);
   };
 };

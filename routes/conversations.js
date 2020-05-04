@@ -31,10 +31,10 @@ router.get("/", authenticate, async (req, res, next) => {
     convIds = [...convIds];
     let interlocutorsIds = new Set();
     conversations.forEach((conv, i) => {
-      _.remove(
-        conversations[i].participants,
-        (user) => `${user._id}` === `${req.user._id}`
-      );
+      // _.remove(
+      //   conversations[i].participants,
+      //   (user) => `${user._id}` === `${req.user._id}`
+      // );
       conv.participants.forEach((participant) => {
         interlocutorsIds.add(participant._id);
       });
@@ -57,10 +57,10 @@ router.get("/single/:id", authenticate, async (req, res, next) => {
       .populate("participants", "-password -tokens -sockets -jobs")
       .populate("lastMessage");
 
-    _.remove(
-      conversation.participants,
-      (user) => `${user._id}` === `${req.user._id}`
-    );
+    // _.remove(
+    //   conversation.participants,
+    //   (user) => `${user._id}` === `${req.user._id}`
+    // );
     conversation.messages.reverse();
     console.log("Conversation fetched");
     res.status(200).send(conversation);
@@ -69,18 +69,25 @@ router.get("/single/:id", authenticate, async (req, res, next) => {
   }
 });
 
-router.delete("/:id", authenticate, async (req, res, next) => {
-  try {
-    const conversation = await Conversation.findById(req.params.id);
-    await Message.deleteMany({
-      _id: { $in: conversation.messages },
-    });
-    await conversation.remove();
-    console.log("Conversation deleted");
-    res.status(200).send(req.params._id);
-  } catch (error) {
-    next(error);
-  }
-});
+// router.delete("/:conversation_id", authenticate, async (req, res, next) => {
+//   const { conversation_id } = req.params;
+//   try {
+//     const conversation = await Conversation.findById(conversation_id);
+
+//     await Message.deleteMany({
+//       _id: { $in: conversation.messages },
+//     });
+
+//     await conversation.remove();
+
+//     _.remove(req.user.privateConversations, (c) => c._id === conversation_id);
+//     await req.user.save();
+
+//     console.log("Conversation ", conversation_id, " deleted");
+//     res.status(200).send({ user: req.user, conversation_id: conversation_id });
+//   } catch (error) {
+//     next(error);
+//   }
+// });
 
 module.exports = router;

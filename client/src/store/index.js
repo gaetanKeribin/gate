@@ -7,6 +7,8 @@ import {
   devMiddleware,
 } from "./reduxMiddlewares";
 import { AsyncStorage } from "react-native";
+import logger from "redux-logger";
+
 import { persistStore, persistReducer } from "redux-persist";
 
 const persistConfig = {

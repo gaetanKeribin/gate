@@ -20,9 +20,11 @@ router.post("/login", async (req, res, next) => {
     next(e);
   }
 });
+
 router.get("/token/verify", authenticate, async (req, res, next) => {
-  res.status(200).send("Token valid");
+  res.status(200).send({ token: req.token });
 });
+
 router.post("/signup", async function (req, res, next) {
   console.log("authController signUp");
 
@@ -38,6 +40,7 @@ router.post("/signup", async function (req, res, next) {
     next(e);
   }
 });
+
 router.get("/logout", authenticate, async (req, res, next) => {
   try {
     req.user.tokens = req.user.tokens.filter((token) => {
@@ -57,14 +60,6 @@ router.delete("/", authenticate, async (req, res, next) => {
     req.user.jobs.forEach(async (job) => {
       await Job.findByIdAndDelete(job);
     });
-    req.user.conversations.forEach((conversation) => {
-      conversation.messages.forEach(async (message) => {
-        await Message.findByIdAndDelete(message);
-      });
-    });
-    req.user.conversations.forEach(async (conversation) => {
-      await conversation.findByIdAndDelete(conversation);
-    });
     await User.findByIdAndDelete(req.user._id);
     res.status(200).send();
   } catch (err) {
@@ -72,13 +67,23 @@ router.delete("/", authenticate, async (req, res, next) => {
   }
 });
 router.patch("/", authenticate, async (req, res, next) => {
-  const { description, jobTitle, organisation, promo, email } = req.body;
+  const {
+    description,
+    jobTitle,
+    organisation,
+    promo,
+    email,
+    alumni,
+  } = req.body;
   try {
     req.user.description = description;
     req.user.promo = promo;
     req.user.jobTitle = jobTitle;
     req.user.organisation = organisation;
     req.user.email = email;
+    req.user.alumni = alumni;
+    req.user.governance = governance;
+
     await req.user.save();
     console.log("User updated");
     res.status(200).send({ user: req.user });
