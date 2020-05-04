@@ -42,7 +42,7 @@ exports.findSocketsFromUserIds = async function (data) {
       return sockets;
     } else if (typeof data === "String") {
       console.log(data);
-      const sockets = await User.findById(data).select("sockets -_id").sockets;
+      const { sockets } = await User.findById(data).select("sockets -_id");
       return sockets;
     }
   } catch (err) {
