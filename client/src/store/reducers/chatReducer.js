@@ -20,8 +20,6 @@ export default function (state = initialState, action) {
         ...action.data,
       };
     case "REQUEST_CONVERSATION:SUCCESS":
-      console.log(action.data);
-
       state.conversations.splice(
         state.conversations
           .map(function (c) {
@@ -45,6 +43,28 @@ export default function (state = initialState, action) {
       };
     case "PRIVATE_MESSAGE_ACK":
     case "RECEIVE_MESSAGE":
+      return {
+        ...state,
+        lastUpdatedAt: action.receivedAt,
+        conversations: [
+          {
+            ...state.conversations.filter(
+              (conv) => conv._id === action.conversation._id
+            )[0],
+            lastMessage: action.message,
+            messages: [
+              action.message,
+              ...state.conversations.filter(
+                (conv) => conv._id === action.conversation._id
+              )[0].messages,
+            ],
+          },
+          ...state.conversations.filter(
+            (conv) => conv._id !== action.conversation._id
+          ),
+        ],
+        isLoaded: true,
+      };
       let i = state.conversations
         .map(function (c) {
           return c._id;
@@ -52,7 +72,6 @@ export default function (state = initialState, action) {
         .indexOf(action.message.conversation_id);
       state.conversations[i].lastMessage = action.message;
       state.conversations[i].messages.splice(0, 0, action.message);
-      console.log(state);
 
       return state;
     case "REQUEST_LOG_OUT:SUCCESS":
