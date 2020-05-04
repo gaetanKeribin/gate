@@ -1,5 +1,4 @@
-import { navigate } from "../../RootNavigation";
-
+import _ from "lodash";
 const initialState = {
   conversations: [],
   conversationsIds: [],
@@ -12,26 +11,6 @@ const initialState = {
 
 export default function (state = initialState, action) {
   switch (action.type) {
-    case "REQUEST_DELETE_CONVERSATION":
-      return {
-        ...state,
-        isDeleting: true,
-      };
-    case "REQUEST_DELETE_CONVERSATION:SUCCESS":
-      return {
-        ...initialState,
-        isDeleting: false,
-      };
-    case "REQUEST_DELETE_CONVERSATION:ERROR":
-      return {
-        ...state,
-        isFetchingConversations: false,
-      };
-    case "REQUEST_CONVERSATIONS":
-      return {
-        ...state,
-        isFetchingConversations: true,
-      };
     case "REQUEST_CONVERSATIONS:SUCCESS":
       return {
         ...state,
@@ -40,17 +19,9 @@ export default function (state = initialState, action) {
         isFetchingConversations: false,
         ...action.data,
       };
-    case "RECEIVE_CONVERSATIONS:ERROR":
-      return {
-        ...state,
-        isFetchingConversations: false,
-      };
-    case "REQUEST_CONVERSATION":
-      return {
-        ...state,
-        isFetchingConversation: true,
-      };
     case "REQUEST_CONVERSATION:SUCCESS":
+      console.log(action.data);
+
       state.conversations.splice(
         state.conversations
           .map(function (c) {
@@ -64,36 +35,26 @@ export default function (state = initialState, action) {
         ...state,
         lastUpdatedAt: action.receivedAt,
         isLoaded: true,
-        isFetchingConversation: false,
       };
-    case "RECEIVE_CONVERSATION:ERROR":
+    case "PRIVATE_CONVERSATION_ACK":
+    case "RECEIVE_NEW_CONVERSATION":
       return {
         ...state,
-        isFetchingConversation: false,
-      };
-    case "RECEIVE_MESSAGE":
-      return {
-        ...state,
+        conversations: [action.conversation, ...state.conversations],
         lastUpdatedAt: action.receivedAt,
-        conversations: !action.newConv && [
-          {
-            ...state.conversations.filter(
-              (conv) => conv._id === action.conversation._id
-            )[0],
-            lastMessage: action.message,
-            messages: [
-              action.message,
-              ...state.conversations.filter(
-                (conv) => conv._id === action.conversation._id
-              )[0].messages,
-            ],
-          },
-          ...state.conversations.filter(
-            (conv) => conv._id !== action.conversation._id
-          ),
-        ],
-        isLoaded: true,
       };
+    case "PRIVATE_MESSAGE_ACK":
+    case "RECEIVE_MESSAGE":
+      let i = state.conversations
+        .map(function (c) {
+          return c._id;
+        })
+        .indexOf(action.message.conversation_id);
+      state.conversations[i].lastMessage = action.message;
+      state.conversations[i].messages.splice(0, 0, action.message);
+      console.log(state);
+
+      return state;
     case "REQUEST_LOG_OUT:SUCCESS":
       return initialState;
     default:

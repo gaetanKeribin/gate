@@ -5,9 +5,9 @@ import {
   Divider,
   Icon,
   Button,
-  ThemeContext
+  ThemeContext,
 } from "react-native-elements";
-import { View, Text, ScrollView } from "react-native";
+import { View, Text, ScrollView, ActivityIndicator } from "react-native";
 import * as ImagePicker from "expo-image-picker";
 import { uploadFile, deleteFile } from "../../actions/filesActions";
 import { LinearGradient } from "expo-linear-gradient";
@@ -23,7 +23,7 @@ const ReadProfileScreen = ({ uploadFile, auth, navigation, deleteFile }) => {
       await ImagePicker.requestCameraRollPermissionsAsync();
 
       const picture = await ImagePicker.launchImageLibraryAsync({
-        allowsEditing: true
+        allowsEditing: true,
       });
 
       !picture.cancelled && uploadFile(picture, "avatar");
@@ -36,7 +36,7 @@ const ReadProfileScreen = ({ uploadFile, auth, navigation, deleteFile }) => {
   return (
     <View
       style={{
-        flex: 1
+        flex: 1,
       }}
     >
       <AppNavbar
@@ -50,14 +50,14 @@ const ReadProfileScreen = ({ uploadFile, auth, navigation, deleteFile }) => {
           style={{
             flex: 1,
             alignContent: "space-between",
-            backgroundColor: "white"
+            backgroundColor: "white",
           }}
         >
           <ScrollView
             style={{
               paddingTop: 40,
               flex: 1,
-              paddingHorizontal: 12
+              paddingHorizontal: 12,
             }}
           >
             <LinearGradient
@@ -69,14 +69,14 @@ const ReadProfileScreen = ({ uploadFile, auth, navigation, deleteFile }) => {
                 marginBottom: 20,
                 paddingVertical: 8,
                 paddingHorizontal: 16,
-                borderRadius: 5
+                borderRadius: 5,
               }}
             >
               <View
                 style={{
                   flex: 1,
                   alignContent: "center",
-                  justifyContent: "center"
+                  justifyContent: "center",
                 }}
               >
                 <Text style={{ fontSize: 20, color: theme.colors.grey5 }}>
@@ -93,10 +93,10 @@ const ReadProfileScreen = ({ uploadFile, auth, navigation, deleteFile }) => {
                   size="xlarge"
                   containerStyle={{
                     borderColor: "white",
-                    borderWidth: 3
+                    borderWidth: 3,
                   }}
                   source={{
-                    uri: `https://siee-gate.herokuapp.com/api/files/avatar/${user.avatar?.filename}`
+                    uri: `https://siee-gate.herokuapp.com/api/files/avatar/${user.avatar?.filename}`,
                   }}
                   onPress={() => setShowAvatarForm(!showAvatarForm)}
                 />
@@ -105,7 +105,7 @@ const ReadProfileScreen = ({ uploadFile, auth, navigation, deleteFile }) => {
                   size="xlarge"
                   containerStyle={{
                     borderColor: "white",
-                    borderWidth: 3
+                    borderWidth: 3,
                   }}
                   title={user.firstname
                     .charAt(0)
@@ -119,7 +119,7 @@ const ReadProfileScreen = ({ uploadFile, auth, navigation, deleteFile }) => {
                   style={{
                     paddingHorizontal: 4,
                     alignContent: "center",
-                    justifyContent: "center"
+                    justifyContent: "center",
                   }}
                 >
                   <Button
@@ -129,7 +129,7 @@ const ReadProfileScreen = ({ uploadFile, auth, navigation, deleteFile }) => {
                       backgroundColor: theme.colors.primaryLight,
                       width: 40,
                       height: 40,
-                      borderRadius: 40
+                      borderRadius: 40,
                     }}
                   />
                   <Button
@@ -138,7 +138,7 @@ const ReadProfileScreen = ({ uploadFile, auth, navigation, deleteFile }) => {
                       backgroundColor: theme.colors.grey0,
                       width: 40,
                       height: 40,
-                      borderRadius: 40
+                      borderRadius: 40,
                     }}
                     onPress={() => deleteFile("avatar", user.avatar?.filename)}
                   />
@@ -151,7 +151,7 @@ const ReadProfileScreen = ({ uploadFile, auth, navigation, deleteFile }) => {
                 style={{
                   textAlignVertical: "bottom",
                   marginHorizontal: 8,
-                  flex: 1
+                  flex: 1,
                 }}
               >
                 {user.jobTitle} chez {user.organisation}
@@ -160,7 +160,7 @@ const ReadProfileScreen = ({ uploadFile, auth, navigation, deleteFile }) => {
             <View
               style={{
                 flexDirection: "row",
-                alignItems: "center"
+                alignItems: "center",
               }}
             >
               <Icon name="school" size={20} color="grey" />
@@ -168,7 +168,7 @@ const ReadProfileScreen = ({ uploadFile, auth, navigation, deleteFile }) => {
                 style={{
                   textAlignVertical: "bottom",
                   marginHorizontal: 8,
-                  flex: 1
+                  flex: 1,
                 }}
               >
                 Promotion {user.promo}
@@ -179,7 +179,7 @@ const ReadProfileScreen = ({ uploadFile, auth, navigation, deleteFile }) => {
                 marginVertical: 20,
                 backgroundColor: "grey",
                 borderWidth: 1,
-                width: 20
+                width: 20,
               }}
             />
             <View style={{ flexDirection: "row" }}>
@@ -192,7 +192,7 @@ const ReadProfileScreen = ({ uploadFile, auth, navigation, deleteFile }) => {
                 marginVertical: 20,
                 backgroundColor: "grey",
                 borderWidth: 1,
-                width: 20
+                width: 20,
               }}
             />
             <View style={{ flexDirection: "row", alignItems: "center" }}>
@@ -222,14 +222,14 @@ const ReadProfileScreen = ({ uploadFile, auth, navigation, deleteFile }) => {
   );
 };
 
-const mapStateToProps = state => ({
-  auth: state.auth
+const mapStateToProps = (state) => ({
+  auth: state.auth,
 });
 
-const mapDispatchToProps = dispatch => {
+const mapDispatchToProps = (dispatch) => {
   return {
     uploadFile: (file, type) => dispatch(uploadFile(file, type)),
-    deleteFile: (bucketName, id) => dispatch(deleteFile(bucketName, id))
+    deleteFile: (bucketName, id) => dispatch(deleteFile(bucketName, id)),
   };
 };
 

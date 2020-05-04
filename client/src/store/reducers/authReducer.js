@@ -16,6 +16,8 @@ const initialState = {
   isDeletingAccount: false,
 };
 
+import _ from "lodash";
+
 import { navigate } from "../../RootNavigation";
 
 export default function (state = initialState, action) {
@@ -74,9 +76,25 @@ export default function (state = initialState, action) {
       };
     case "REQUEST_CREATE_JOB":
       return state;
-
+    case "RECEIVE_CONVERSATION":
+      _.update(state, "user.privateConversations", (a) => [
+        ...a,
+        {
+          conversation_id: action.conversation._id,
+          interlocutor_id: action.message.sender,
+        },
+      ]);
+      return state;
+    case "PRIVATE_CONVERSATION_ACK":
+      _.update(state, "user.privateConversations", (a) => [
+        ...a,
+        {
+          conversation_id: action.conversation._id,
+          interlocutor_id: action.message.recipient,
+        },
+      ]);
+      return state;
     // SUCCESS
-
     case "REQUEST_VERIFY_TOKEN:SUCCESS":
       return {
         ...state,
@@ -104,6 +122,7 @@ export default function (state = initialState, action) {
         signUpError: null,
         ...action.data,
       };
+    case "REQUEST_DELETE_ACCOUNT:SUCCESS":
     case "REQUEST_LOG_OUT:SUCCESS":
       return initialState;
     case "REQUEST_UPDATE_USER:SUCCESS":
@@ -128,8 +147,6 @@ export default function (state = initialState, action) {
         ...state,
         ...action.data,
       };
-    case "REQUEST_DELETE_ACCOUNT:SUCCESS":
-      return initialState;
     case "REQUEST_UPDATE_PASSWORD:SUCCESS":
       return { ...state, updatePasswordError: null };
     case "REQUEST_UPDATE_JOB:SUCCESS":
@@ -159,13 +176,6 @@ export default function (state = initialState, action) {
         isLoaded: true,
         fetchMyJobsError:
           "Vos offres d'emploi n'ont pas pu être récupérées, essayez de nouveau.",
-      };
-    case "REQUEST_DELETE_ACCOUNT:ERROR":
-      return {
-        ...state,
-        isDeletingAccount: false,
-        deleteAccountError:
-          "Cela n'a pas marché. Peut-être le mot de passe était-il incorrect.",
       };
     case "REQUEST_UPDATE_USER:ERROR":
       return {

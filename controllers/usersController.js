@@ -27,20 +27,24 @@ exports.removeSocketFromUser = async function (socket) {
   }
 };
 
-exports.findSocketsWithUsers = async function (userIds) {
+exports.findSocketsFromUserIds = async function (data) {
   try {
-    const sockets = [];
-    const users = await User.find({ _id: { $in: userIds } }).select(
-      "sockets -_id"
-    );
-    users.forEach((user) => {
-      user.sockets.forEach((socket) => {
-        sockets.push(socket.socketId);
+    if (typeof data === "Array") {
+      const sockets = [];
+      const users = await User.find({ _id: { $in: data } }).select(
+        "sockets -_id"
+      );
+      users.forEach((user) => {
+        user.sockets.forEach((socket) => {
+          sockets.push(socket.socketId);
+        });
       });
-    });
-    console.log("Sockets found !", sockets);
-
-    return sockets;
+      return sockets;
+    } else if (typeof data === "String") {
+      console.log(data);
+      const sockets = await User.findById(data).select("sockets -_id").sockets;
+      return sockets;
+    }
   } catch (err) {
     console.log(err);
   }

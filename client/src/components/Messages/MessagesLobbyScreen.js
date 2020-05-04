@@ -57,7 +57,6 @@ const SearchResultItem = ({ item, theme, navigation, chat, dispatch }) => {
                     actionParams: { recipients: [item?._id] },
                     message: "Demarrer une conversation avec " + fullName,
                   },
-                  dispatchCallback: fetchConversations,
                 })
               )
       }
@@ -149,16 +148,23 @@ const SearchResultItem = ({ item, theme, navigation, chat, dispatch }) => {
 
 const Item = ({ item, navigation, auth, theme, dispatch }) => {
   const listParticipants = () => {
+    _.remove(
+      item?.participants,
+      (participant) => participant._id === auth.user._id
+    );
+
     if (item?.participants?.length > 1) {
       const participantsList = item?.participants?.map((participant) =>
         _.capitalize(participant.firstname)
       );
       return participantsList.toString().replace(",", ", ");
-    } else {
+    } else if (item?.participants?.length === 1) {
       return _.capitalize(item?.participants[0]?.firstname).concat(
         " ",
         _.capitalize(item?.participants[0]?.lastname)
       );
+    } else {
+      return "Compte supprimé";
     }
   };
 
@@ -168,7 +174,7 @@ const Item = ({ item, navigation, auth, theme, dispatch }) => {
     <TouchableOpacity
       onPress={() =>
         navigation.navigate("Room", {
-          conversation: item,
+          conversation_id: item._id,
         })
       }
     >
@@ -208,13 +214,12 @@ const Item = ({ item, navigation, auth, theme, dispatch }) => {
           <View
             style={{
               flex: 1,
-              justifyContent: "space-between",
+              justifyContent: "flex-start",
             }}
           >
             <View
               style={{
                 flexDirection: "row",
-                flex: 1,
                 justifyContent: "space-between",
               }}
             >
@@ -267,7 +272,7 @@ const Item = ({ item, navigation, auth, theme, dispatch }) => {
               >
                 {item?.lastMessage?.text}
               </Text>
-              <View
+              {/* <View
                 style={{
                   flexDirection: "row",
                   alignContent: "center",
@@ -289,12 +294,11 @@ const Item = ({ item, navigation, auth, theme, dispatch }) => {
                             },
                           ],
                         },
-                        dispatchCallback: fetchConversations,
                       })
                     )
                   }
                 />
-              </View>
+              </View> */}
             </View>
           </View>
         </View>
@@ -320,13 +324,13 @@ const ChatLobbyScreen = ({ navigation }) => {
 
   const onRefresh = useCallback(() => {
     setRefreshing(true);
-    fetchConversations();
+    dispatch(fetchConversations());
     setRefreshing(false);
   }, [refreshing]);
 
   const searchProcess = () => {
     const searchResults = [];
-    users.users.forEach((user) => {
+    users.users?.forEach((user) => {
       if (user._id !== auth.user._id) {
         if (
           user.firstname.includes(search.toLowerCase()) === true ||
@@ -341,7 +345,7 @@ const ChatLobbyScreen = ({ navigation }) => {
 
   return (
     <View style={{ flex: 1 }}>
-      <View style={{ backgroundColor: "white", paddingVertical: 4 }}>
+      {/* <View style={{ backgroundColor: "white", paddingVertical: 4 }}>
         <SearchBar
           placeholder="Chercher un alumni ici..."
           onChangeText={setSearch}
@@ -378,7 +382,7 @@ const ChatLobbyScreen = ({ navigation }) => {
             <ActivityIndicator size="small" />
           </View>
         )}
-      </View>
+      </View> */}
       {chat.isLoaded ? (
         chat.conversations.length > 0 ? (
           <FlatList
@@ -411,7 +415,7 @@ const ChatLobbyScreen = ({ navigation }) => {
             <Button
               title="Rafraichir"
               type="clear"
-              onPress={fetchConversations}
+              onPress={() => dispatch(fetchConversations())}
             />
           </View>
         )

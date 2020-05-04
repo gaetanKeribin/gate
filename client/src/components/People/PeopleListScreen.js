@@ -105,7 +105,7 @@ const PeopleScreen = ({ navigation }) => {
             elevation: 2,
             backgroundColor: "white",
           }}
-          data={users.users.filter((user) => user._id !== auth.user._id)}
+          data={users.users?.filter((user) => user._id !== auth.user._id)}
           renderItem={({ item }) => (
             <Item item={item} navigation={navigation} />
           )}

@@ -1,8 +1,17 @@
 import React, { useContext, useState, useEffect } from "react";
-import { View, Text, TextInput, FlatList } from "react-native";
-import { connect } from "react-redux";
+import {
+  View,
+  Text,
+  TextInput,
+  FlatList,
+  ActivityIndicator,
+} from "react-native";
+import { connect, useDispatch, useSelector } from "react-redux";
 import { ThemeContext, Button, Icon } from "react-native-elements";
-import { sendMessage, fetchConversation } from "../../actions/chatActions";
+import {
+  sendPrivateMessage,
+  fetchConversation,
+} from "../../actions/chatActions";
 import _ from "lodash";
 
 const Message = ({ message, incoming, theme }) => {
@@ -41,46 +50,55 @@ const Message = ({ message, incoming, theme }) => {
   );
 };
 
-const RoomScreen = ({ chat, sendMessage, route, auth, fetchConversation }) => {
-  const conversation_id = route.params.conversation._id;
+const RoomScreen = ({ route }) => {
+  const conversation_id = route.params.conversation_id;
   const [newMessage, setNewMessage] = useState("");
   const { theme } = useContext(ThemeContext);
+  const dispatch = useDispatch();
+  const { chat, auth } = useSelector((state) => state);
   const conversation = chat.conversations.filter(
     (conv) => conv._id === conversation_id
   )[0];
+  const interlocutors = conversation.participants.filter(
+    (p) => p._id !== auth.user._id
+  );
 
   useEffect(() => {
     function fetchData() {
-      fetchConversation(conversation_id);
+      dispatch(fetchConversation(conversation_id));
     }
     fetchData();
   }, []);
 
   const onSendMessage = () => {
-    if (!newMessage) {
-      return;
-    }
-    sendMessage({
-      text: newMessage,
-      conversation_id,
-    });
+    dispatch(
+      sendPrivateMessage({
+        text: newMessage,
+        conversation_id,
+        recipient: interlocutors[0],
+      })
+    );
     setNewMessage("");
   };
 
   return (
     <View style={{ flex: 1, justifyContent: "space-between" }}>
-      <FlatList
-        data={conversation.messages}
-        renderItem={({ item }) => (
-          <Message
-            message={item}
-            incoming={item?.sender !== auth.user._id}
-            theme={theme}
-          />
-        )}
-        keyExtractor={(item) => item?._id}
-        inverted={true}
-      />
+      {conversation?.messages ? (
+        <FlatList
+          data={conversation.messages}
+          renderItem={({ item }) => (
+            <Message
+              message={item}
+              incoming={item?.sender !== auth.user._id}
+              theme={theme}
+            />
+          )}
+          keyExtractor={(item) => item?._id}
+          inverted={true}
+        />
+      ) : (
+        <ActivityIndicator />
+      )}
       <View
         style={{
           flexDirection: "row",

@@ -3,6 +3,7 @@
   "displayName": "SIEE",
   "expo": {
     "name": "siee-gate-client",
+    "scheme": "siee-gate-client",
     "slug": "siee-gate-client",
     "version": "1.0.0",
     "platforms": ["ios", "android", "web"],

@@ -6,12 +6,14 @@ import { LinearGradient } from "expo-linear-gradient";
 import theme from "../../Theme.json";
 import _ from "lodash";
 import { showOverlay } from "../../actions/overlayAction";
-import { sendMessage, fetchConversations } from "../../actions/chatActions";
+import { startPrivateConversation } from "../../actions/chatActions";
 
 const PeopleScreen = ({ route, navigation }) => {
-  const { chat } = useSelector((state) => state);
+  const { chat, auth } = useSelector((state) => state);
   const dispatch = useDispatch();
   const { item } = route.params;
+
+  console.log(auth);
 
   return (
     <View
@@ -147,35 +149,36 @@ const PeopleScreen = ({ route, navigation }) => {
         </ScrollView>
         <Button
           title="Contacter"
-          onPress={() =>
-            chat.interlocutorsIds.includes(item?._id)
-              ? () =>
-                  navigation.navigate("Room", {
-                    title: fullName,
-                    conversation: chat.convIdsWithPartsIds
-                      .filter(
-                        (element) =>
-                          element.participants.includes(item?._id) === true
-                      )
-                      .filter((conv) => conv.participants.length === 2)[0],
-                  })
-              : dispatch(
-                  showOverlay({
-                    form: {
-                      action: sendMessage,
-                      inputName: "text",
-                      actionParams: { recipients: [item?._id] },
-                      message:
-                        "Demarrer une conversation avec " +
-                        _.capitalize(item?.firstname) +
-                        " " +
-                        _.capitalize(item?.lastname),
-                    },
-                    redirect: "Messages",
-                    dispatchCallback: fetchConversations,
-                  })
-                )
-          }
+          onPress={() => {
+            let a = auth.user.privateConversations.filter(
+              (c) => c.interlocutor_id === item._id
+            );
+            console.log(a);
+
+            if (a.length > 0) {
+              navigation.navigate("Messages", {
+                screen: "Room",
+                params: {
+                  conversation_id: a[0].conversation_id,
+                },
+              });
+            } else
+              dispatch(
+                showOverlay({
+                  form: {
+                    action: startPrivateConversation,
+                    inputName: "text",
+                    actionParams: { recipient: item?._id },
+                    message:
+                      "Demarrer une conversation avec " +
+                      _.capitalize(item?.firstname) +
+                      " " +
+                      _.capitalize(item?.lastname),
+                  },
+                  redirect: "Messages",
+                })
+              );
+          }}
         />
       </View>
     </View>
