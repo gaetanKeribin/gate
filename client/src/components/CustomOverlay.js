@@ -169,8 +169,10 @@ const CustomOverlay = () => {
 
   const dispatchRedirectReset = () => {
     dispatch(resetOverlay());
-    typeof overlay.dispatchCallback === "function" &&
-      dispatch(overlay.dispatchCallback());
+    typeof overlay.callbacks === "array" &&
+      overlay.callbacks.forEach((d) => {
+        dispatch(d());
+      });
     overlay.redirect && RootNavigation.navigate(overlay.redirect, {});
   };
 

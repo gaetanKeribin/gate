@@ -3,7 +3,7 @@ export const showOverlay = ({
   form,
   menu,
   timeout,
-  dispatchCallback,
+  callbacks,
   redirect,
 }) => {
   return {
@@ -13,7 +13,7 @@ export const showOverlay = ({
       form,
       menu,
       timeout,
-      dispatchCallback,
+      callbacks,
       redirect,
     },
   };

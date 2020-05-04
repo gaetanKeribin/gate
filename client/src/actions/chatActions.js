@@ -6,7 +6,6 @@ export const sendPrivateMessage = (message) => {
       ...message,
       sentAt: new Date(),
     },
-    dispatchCallback: "SEND_PRIVATE_MESSAGE",
   };
 };
 
@@ -18,7 +17,6 @@ export const startPrivateConversation = (message) => {
       ...message,
       sentAt: new Date(),
     },
-    dispatchCallback: "START_PRIVATE_CONVERSATION",
   };
 };
 

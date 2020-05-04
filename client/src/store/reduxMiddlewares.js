@@ -71,7 +71,7 @@ export const socketMiddleware = () => {
     }
     if (action.type.substring(0, 6) === "SOCKET") {
       socket.emit(action.event, action.payload);
-      store.dispatch({ type: action.dispatchCallback, ...action.payload });
+      store.dispatch({ type: action.callbacks, ...action.payload });
     }
     if (action.type === "REQUEST_LOG_OUT:SUCCESS") {
       socket.disconnect();
@@ -137,7 +137,7 @@ export const axiosMiddleware = (store) => (next) => (action) => {
             showOverlay({
               timeout: 3000,
               redirect: action.successNotification.redirect,
-              dispatchCallback: action.successNotification.dispatchCallback,
+              callbacks: action.successNotification.callbacks,
               notification: {
                 variant: "success",
                 message: action.successNotification.message,
@@ -161,8 +161,9 @@ export const axiosMiddleware = (store) => (next) => (action) => {
             showOverlay({
               timeout: 3000,
               redirect: err.response?.data.forceReconnect && "Auth",
-              dispatchCallback:
-                err.response?.data.forceReconnect && "REQUEST_LOG_OUT:SUCCESS",
+              callbacks: err.response?.data.forceReconnect && [
+                "REQUEST_LOG_OUT:SUCCESS",
+              ],
               notification: {
                 variant: "error",
                 message: err.response?.data.message || "Cela n'a pas marché...",

@@ -48,30 +48,30 @@ export default function (state = initialState, action) {
         lastUpdatedAt: action.receivedAt,
         conversations: [
           {
-            ...state.conversations.filter(
+            ...state.conversations?.filter(
               (conv) => conv._id === action.message.conversation_id
             )[0],
             lastMessage: action.message,
             messages: [
               action.message,
-              ...state.conversations.filter(
+              ...state.conversations?.filter(
                 (conv) => conv._id === action.message.conversation_id
               )[0]?.messages,
             ],
           },
-          ...state.conversations.filter(
+          ...state.conversations?.filter(
             (conv) => conv._id !== action.message.conversation_id
           ),
         ],
         isLoaded: true,
       };
-      let i = state.conversations
-        .map(function (c) {
-          return c._id;
-        })
-        .indexOf(action.message.conversation_id);
-      state.conversations[i].lastMessage = action.message;
-      state.conversations[i].messages.splice(0, 0, action.message);
+      // let i = state.conversations
+      //   .map(function (c) {
+      //     return c._id;
+      //   })
+      //   .indexOf(action.message.conversation_id);
+      // state.conversations[i].lastMessage = action.message;
+      // state.conversations[i].messages.splice(0, 0, action.message);
 
       return state;
     case "REQUEST_LOG_OUT:SUCCESS":
