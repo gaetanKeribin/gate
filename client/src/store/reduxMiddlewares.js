@@ -160,6 +160,7 @@ export const axiosMiddleware = (store) => (next) => (action) => {
           store.dispatch(
             showOverlay({
               timeout: 3000,
+              redirect: err.response?.data.forceReconnect && "Auth",
               dispatchCallback:
                 err.response?.data.forceReconnect && "REQUEST_LOG_OUT:SUCCESS",
               notification: {

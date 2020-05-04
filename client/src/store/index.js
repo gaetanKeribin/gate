@@ -14,17 +14,20 @@ import { persistStore, persistReducer } from "redux-persist";
 const persistConfig = {
   key: "root",
   storage: AsyncStorage,
-  // whitelist: ["authReducer"],
   blacklist: ["overlay"],
 };
 
 const persistedReducer = persistReducer(persistConfig, rootReducer);
-const middlewares = [thunk, devMiddleware, axiosMiddleware, socketMiddleware()];
+const middlewares = [
+  thunk,
+  devMiddleware,
+  axiosMiddleware,
+  socketMiddleware(),
+  logger,
+];
 
 const store = createStore(persistedReducer, applyMiddleware(...middlewares));
 
 let persistor = persistStore(store);
-
-store.subscribe(() => {});
 
 export { store, persistor };

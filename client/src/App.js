@@ -1,6 +1,6 @@
 import React from "react";
 import { Provider, useSelector, shallowEqual, useDispatch } from "react-redux";
-import { SafeAreaView, Platform, StatusBar } from "react-native";
+import { SafeAreaView, Platform, StatusBar, View } from "react-native";
 import { store, persistor } from "./store/index";
 import { PersistGate } from "redux-persist/integration/react";
 import { NavigationContainer } from "@react-navigation/native";
@@ -125,14 +125,21 @@ const AppStack = () => {
   return (
     <NavigationContainer
       ref={navigationRef}
-      linking={linking}
+      linking={useLinking}
       initialState={initialNavigationState}
     >
-      <Switch.Navigator headerMode="none">
-        {userToken && <Switch.Screen name="Root" component={DrawerStack} />}
-        {!userToken && <Switch.Screen name="Auth" component={Auth} />}
-      </Switch.Navigator>
-      <CustomOverlay />
+      <View
+        style={{
+          maxWidth: 500,
+          flex: 1,
+        }}
+      >
+        <Switch.Navigator headerMode="none">
+          {userToken && <Switch.Screen name="Root" component={DrawerStack} />}
+          {!userToken && <Switch.Screen name="Auth" component={Auth} />}
+        </Switch.Navigator>
+        <CustomOverlay />
+      </View>
     </NavigationContainer>
   );
 };

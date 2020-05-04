@@ -51,18 +51,10 @@ const Message = ({ message, incoming, theme }) => {
 };
 
 const RoomScreen = ({ route }) => {
-  const conversation_id = route.params.conversation_id;
+  const { conversation_id } = route.params;
   const [newMessage, setNewMessage] = useState("");
   const { theme } = useContext(ThemeContext);
   const dispatch = useDispatch();
-  const { chat, auth } = useSelector((state) => state);
-  const conversation = chat.conversations.filter(
-    (conv) => conv._id === conversation_id
-  )[0];
-  const interlocutors = conversation.participants.filter(
-    (p) => p._id !== auth.user._id
-  );
-
   useEffect(() => {
     function fetchData() {
       dispatch(fetchConversation(conversation_id));
@@ -70,7 +62,15 @@ const RoomScreen = ({ route }) => {
     fetchData();
   }, []);
 
+  const { chat, auth } = useSelector((state) => state);
+  const conversation = chat.conversations.filter(
+    (conv) => conv._id == conversation_id
+  )[0];
+
   const onSendMessage = () => {
+    const interlocutors = conversation?.participants.filter(
+      (p) => p._id != auth.user._id
+    );
     dispatch(
       sendPrivateMessage({
         text: newMessage,

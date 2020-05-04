@@ -151,9 +151,8 @@ const PeopleScreen = ({ route, navigation }) => {
           title="Contacter"
           onPress={() => {
             let a = auth.user.privateConversations.filter(
-              (c) => c.interlocutor_id === item._id
+              (c) => c.interlocutor_id == item._id
             );
-
             if (a.length > 0) {
               navigation.navigate("Messages", {
                 screen: "Room",
