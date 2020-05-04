@@ -115,9 +115,9 @@ io.on("connection", async function (socket) {
     const recipientSockets = await findSocketsFromUserIds(message.recipient);
 
     if (recipientSockets) {
-      recipientSockets.forEach((element) => {
-        console.log("Emiting to socket: ", element);
-        io.to(`${element.id}`).emit("private-message", { message });
+      recipientSockets.forEach((s) => {
+        console.log("Emiting to socket: ", s);
+        io.to(`${s.socketId}`).emit("private-message", { message });
       });
     }
     socket.emit("private-message-ack", { message });

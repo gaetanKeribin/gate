@@ -164,12 +164,14 @@ const Item = ({ item, navigation, auth, theme, dispatch }) => {
     }
   };
 
+  const title = listParticipants();
   const participants = listParticipants(item);
 
   return (
     <TouchableOpacity
       onPress={() =>
         navigation.navigate("Room", {
+          title,
           conversation_id: item._id,
         })
       }
