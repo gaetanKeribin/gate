@@ -6,7 +6,7 @@ import {
   FlatList,
   ActivityIndicator,
 } from "react-native";
-import { connect, useDispatch, useSelector } from "react-redux";
+import { connect, useDispatch, useSelector, shallowEqual } from "react-redux";
 import { ThemeContext, Button, Icon } from "react-native-elements";
 import {
   sendPrivateMessage,
@@ -54,6 +54,7 @@ const RoomScreen = ({ route }) => {
   const { conversation_id } = route.params;
   const [newMessage, setNewMessage] = useState("");
   const { theme } = useContext(ThemeContext);
+  const { chat, auth } = useSelector((state) => state, shallowEqual);
   const dispatch = useDispatch();
   useEffect(() => {
     function fetchData() {
@@ -62,7 +63,6 @@ const RoomScreen = ({ route }) => {
     fetchData();
   }, []);
 
-  const { chat, auth } = useSelector((state) => state);
   const conversation = chat.conversations.filter(
     (conv) => conv._id == conversation_id
   )[0];
