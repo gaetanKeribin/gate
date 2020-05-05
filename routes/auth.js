@@ -66,6 +66,7 @@ router.delete("/", authenticate, async (req, res, next) => {
     next(err);
   }
 });
+
 router.patch("/", authenticate, async (req, res, next) => {
   const {
     description,
@@ -74,6 +75,8 @@ router.patch("/", authenticate, async (req, res, next) => {
     promo,
     email,
     alumni,
+    administration,
+    professor,
   } = req.body;
   try {
     req.user.description = description;
@@ -82,7 +85,8 @@ router.patch("/", authenticate, async (req, res, next) => {
     req.user.organisation = organisation;
     req.user.email = email;
     req.user.alumni = alumni;
-    req.user.governance = governance;
+    req.user.administration = administration;
+    req.user.professor = professor;
 
     await req.user.save();
     console.log("User updated");

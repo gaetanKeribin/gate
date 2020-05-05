@@ -6,7 +6,7 @@ import {
   FlatList,
   ActivityIndicator,
 } from "react-native";
-import { connect, useDispatch, useSelector, shallowEqual } from "react-redux";
+import { useDispatch, useSelector } from "react-redux";
 import { ThemeContext, Button, Icon } from "react-native-elements";
 import {
   sendPrivateMessage,
@@ -50,20 +50,16 @@ const Message = ({ message, incoming, theme }) => {
   );
 };
 
-const RoomScreen = ({ route, chat }) => {
+const RoomScreen = ({ route }) => {
   const { conversation_id } = route.params;
   const [newMessage, setNewMessage] = useState("");
   const { theme } = useContext(ThemeContext);
 
-  const { user } = useSelector((state) => state.auth, shallowEqual);
+  const { user } = useSelector((state) => state.auth);
   const conversation = useSelector(
     (state) =>
       state.chat.conversations.filter((conv) => conv._id === conversation_id)[0]
   );
-
-  // const conversation = chat.conversations.filter(
-  //   (conv) => conv._id === conversation_id
-  // )[0];
 
   const dispatch = useDispatch();
   useEffect(() => {
@@ -143,9 +139,4 @@ const RoomScreen = ({ route, chat }) => {
   );
 };
 
-export default connect(
-  (state) => ({
-    chat: state.chat,
-  }),
-  {}
-)(RoomScreen);
+export default RoomScreen;

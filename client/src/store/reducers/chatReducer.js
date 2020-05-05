@@ -1,4 +1,3 @@
-import _ from "lodash";
 const initialState = {
   conversations: [],
   conversationsIds: [],
@@ -20,17 +19,12 @@ export default function (state = initialState, action) {
         ...action.data,
       };
     case "REQUEST_CONVERSATION:SUCCESS":
-      state.conversations.splice(
-        state.conversations
-          .map(function (c) {
-            return c._id;
-          })
-          .indexOf(action.data._id),
-        1,
-        action.data
-      );
       return {
         ...state,
+        conversations: [
+          action.data,
+          ...state.conversations.filter((c) => c._id !== action.data._id),
+        ],
         lastUpdatedAt: action.receivedAt,
         isLoaded: true,
       };
@@ -49,21 +43,40 @@ export default function (state = initialState, action) {
         })
         .indexOf(action.message.conversation_id);
 
-      return {
-        ...state,
-        lastUpdatedAt: action.receivedAt,
-        conversations: [
-          {
-            ...state.conversations[i],
-            lastMessage: action.message,
-            messages: [action.message, ...state.conversations[i].messages],
-          },
-          ...state.conversations.filter(
-            (conv) => conv._id !== action.message.conversation_id
-          ),
-        ],
-        isLoaded: true,
-      };
+      if (state.conversations[i].messages) {
+        return {
+          ...state,
+          lastUpdatedAt: action.receivedAt,
+          conversations: [
+            {
+              ...state.conversations[i],
+              lastMessage: action.message,
+              messages: [action.message, ...state.conversations[i].messages],
+            },
+            ...state.conversations.filter(
+              (conv) => conv._id !== action.message.conversation_id
+            ),
+          ],
+          isLoaded: true,
+        };
+      } else {
+        return {
+          ...state,
+          lastUpdatedAt: action.receivedAt,
+          conversations: [
+            {
+              ...state.conversations[i],
+              lastMessage: action.message,
+              messages: [action.message],
+            },
+            ...state.conversations.filter(
+              (conv) => conv._id !== action.message.conversation_id
+            ),
+          ],
+          isLoaded: true,
+        };
+      }
+
     case "REQUEST_LOG_OUT:SUCCESS":
       return initialState;
     default:

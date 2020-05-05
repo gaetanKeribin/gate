@@ -87,6 +87,10 @@ const ReadProfileScreen = ({ uploadFile, auth, navigation, deleteFile }) => {
                 >
                   {_.capitalize(user.lastname)}
                 </Text>
+                {user.professor && <Text>Professeur</Text>}
+                {user.administration && (
+                  <Text>Membre du corps administratif</Text>
+                )}
               </View>
               {user.avatar ? (
                 <Avatar

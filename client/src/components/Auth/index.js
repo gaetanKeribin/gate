@@ -19,7 +19,7 @@ const AuthNavigator = () => {
           name="SignUp"
           component={SignUpScreen}
           options={{
-            title: "S'inscrire"
+            title: "S'inscrire",
           }}
         />
       </Stack.Navigator>

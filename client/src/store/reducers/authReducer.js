@@ -16,10 +16,6 @@ const initialState = {
   isDeletingAccount: false,
 };
 
-import _ from "lodash";
-
-import { navigate } from "../../RootNavigation";
-
 export default function (state = initialState, action) {
   switch (action.type) {
     case "REQUEST_AUTH_TOKEN":
@@ -77,23 +73,34 @@ export default function (state = initialState, action) {
     case "REQUEST_CREATE_JOB":
       return state;
     case "RECEIVE_CONVERSATION":
-      _.update(state, "user.privateConversations", (a) => [
-        ...a,
-        {
-          conversation_id: action.conversation._id,
-          interlocutor_id: action.message.sender,
+      return {
+        ...state,
+        user: {
+          ...state.user,
+          privateConversations: [
+            ...state.user.privateConversations,
+            {
+              conversation_id: action.conversation._id,
+              interlocutor_id: action.message.sender,
+            },
+          ],
         },
-      ]);
-      return state;
+      };
     case "PRIVATE_CONVERSATION_ACK":
-      _.update(state, "user.privateConversations", (a) => [
-        ...a,
-        {
-          conversation_id: action.conversation._id,
-          interlocutor_id: action.message.recipient,
+      return {
+        ...state,
+        user: {
+          ...state.user,
+          privateConversations: [
+            ...state.user.privateConversations,
+            {
+              conversation_id: action.conversation._id,
+              interlocutor_id: action.message.recipient,
+            },
+          ],
         },
-      ]);
-      return state;
+      };
+
     // SUCCESS
     case "REQUEST_VERIFY_TOKEN:SUCCESS":
       return {

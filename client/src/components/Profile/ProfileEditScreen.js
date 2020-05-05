@@ -22,7 +22,9 @@ const ProfileEditScreen = ({
   const [promo, setPromo] = useState(`${auth.user.promo || ""}`);
   const [alumni, setAlumni] = useState(auth.user.alumni);
   const [professor, setProfessor] = useState(auth.user.professor);
-  const [governance, setGovernance] = useState(auth.user.governance);
+  const [administration, setAdministration] = useState(
+    auth.user.administration
+  );
   const [password, setPassword] = useState("");
   const [confirmation, setConfirmation] = useState("");
   const [passwordError, setPasswordError] = useState("");
@@ -41,7 +43,7 @@ const ProfileEditScreen = ({
       promo,
       alumni,
       professor,
-      governance,
+      administration,
     });
   };
 
@@ -169,8 +171,8 @@ const ProfileEditScreen = ({
                   Membre du corps administratif
                 </Text>
                 <Switch
-                  value={governance}
-                  onValueChange={(value) => setGovernance(value)}
+                  value={administration}
+                  onValueChange={(value) => setAdministration(value)}
                 />
               </View>
               <Input
