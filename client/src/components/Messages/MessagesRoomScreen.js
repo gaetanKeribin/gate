@@ -56,14 +56,14 @@ const RoomScreen = ({ route, chat }) => {
   const { theme } = useContext(ThemeContext);
 
   const { user } = useSelector((state) => state.auth, shallowEqual);
-  // const conversation = useSelector(
-  //   (state) =>
-  //     state.chat.conversations.filter((conv) => conv._id === conversation_id)[0]
-  // );
+  const conversation = useSelector(
+    (state) =>
+      state.chat.conversations.filter((conv) => conv._id === conversation_id)[0]
+  );
 
-  const conversation = chat.conversations.filter(
-    (conv) => conv._id === conversation_id
-  )[0];
+  // const conversation = chat.conversations.filter(
+  //   (conv) => conv._id === conversation_id
+  // )[0];
 
   const dispatch = useDispatch();
   useEffect(() => {
