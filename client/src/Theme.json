@@ -1,8 +1,8 @@
 {
   "colors": {
-    "secondary": "rgba(33.9,44.4,114.4,1)",
-    "primaryLight": "rgba(90,120.2,255,1)",
-    "primary": "rgba(77,100.2,255,1)",
+    "primary": "rgba(51,122,183,1)",
+    "primaryLight": "rgba(120,160,200,1)",
+    "secondary": "#2c2346",
     "grey0": "rgba(66, 66, 66, 1)",
     "grey1": "rgba(100, 100, 100, 1)",
     "grey2": "rgba(133, 133, 133, 1)",
