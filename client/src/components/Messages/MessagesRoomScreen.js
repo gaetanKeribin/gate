@@ -58,7 +58,7 @@ const RoomScreen = ({ route }) => {
   const { user } = useSelector((state) => state.auth, shallowEqual);
   const conversation = useSelector(
     (state) =>
-      state.chat.conversation.filter((conv) => conv._id == conversation_id)[0],
+      state.chat.conversations.filter((conv) => conv._id == conversation_id)[0],
     shallowEqual
   );
 
