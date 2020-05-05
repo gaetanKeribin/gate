@@ -17,10 +17,13 @@ import People from "./components/People";
 import Messages from "./components/Messages";
 import Auth from "./components/Auth";
 import CustomOverlay from "./components/CustomOverlay";
+
 import theme from "./Theme.json";
-import { navigationRef, isMountedRef } from "./RootNavigation";
-import { verifyToken } from "./actions/authActions";
 import useLinking from "./useLinking";
+
+import { navigationRef, isMountedRef } from "./RootNavigation";
+
+import { verifyToken } from "./actions/authActions";
 import { fetchJobs, fetchMyJobs } from "./actions/jobsActions";
 import { fetchUsers } from "./actions/usersActions";
 import { fetchConversations } from "./actions/chatActions";
@@ -116,8 +119,8 @@ const DrawerStack = () => {
 
 const AppStack = (props) => {
   const [isLoadingComplete, setLoadingComplete] = React.useState(false);
-  const [isSplashReady, setSplashReady] = React.useState(false);
   const [initialNavigationState, setInitialNavigationState] = React.useState();
+  const containerRef = React.useRef();
   const { getInitialState } = useLinking(navigationRef);
   const dispatch = useDispatch();
 
@@ -148,23 +151,23 @@ const AppStack = (props) => {
     return null;
   } else {
     return (
-      <NavigationContainer
-        ref={navigationRef}
-        initialState={initialNavigationState}
+      <View
+        style={{
+          maxWidth: 500,
+          flex: 1,
+        }}
       >
-        <View
-          style={{
-            maxWidth: 500,
-            flex: 1,
-          }}
+        <NavigationContainer
+          ref={navigationRef}
+          initialState={initialNavigationState}
         >
           <Switch.Navigator headerMode="none">
             {userToken && <Switch.Screen name="Root" component={DrawerStack} />}
             {!userToken && <Switch.Screen name="Auth" component={Auth} />}
           </Switch.Navigator>
           <CustomOverlay />
-        </View>
-      </NavigationContainer>
+        </NavigationContainer>
+      </View>
     );
   }
 };

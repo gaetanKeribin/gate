@@ -3,8 +3,6 @@ const router = express.Router();
 const { authenticate } = require("../middleware/authenticate");
 const User = require("../models/user");
 const Job = require("../models/job");
-const Conversation = require("../models/conversation");
-const Message = require("../models/message");
 const _ = require("lodash");
 
 router.post("/login", async (req, res, next) => {

@@ -1,12 +1,23 @@
 {
-  "name": "siee-gate-client",
-  "displayName": "SIEE",
   "expo": {
-    "name": "siee-gate-client",
-    "scheme": "siee-gate-client",
-    "slug": "siee-gate-client",
+    "name": "siee-gate-test",
+    "slug": "siee-gate-test",
+    "orientation": "portrait",
     "version": "1.0.0",
     "platforms": ["ios", "android", "web"],
+    "icon": "./src/assets/images/icon.png",
+    "scheme": "myapp",
+    "splash": {
+      "image": "./src/assets/images/splash.png",
+      "resizeMode": "contain",
+      "backgroundColor": "#ffffff"
+    },
+    "updates": {
+      "fallbackToCacheTimeout": 0
+    },
+    "ios": {
+      "supportsTablet": true
+    },
     "assetBundlePatterns": ["**/*"]
   }
 }

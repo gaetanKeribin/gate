@@ -1,7 +1,5 @@
 {
-  "main": "index.js",
-  "name": "siee-gate-web",
-  "homepage": "http://gaetankeribin.github.io/siee-gate-web/",
+  "main": "node_modules/expo/AppEntry.js",
   "scripts": {
     "android": "react-native run-android",
     "expo-web": "expo start -w",

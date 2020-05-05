@@ -45,7 +45,7 @@ const logInScreen = ({ auth, logIn, navigation }) => {
         }}
       >
         <Image
-          source={require("../../assets/logo.png")}
+          source={require("../../assets/images/logo.png")}
           style={{
             height: 150,
             width: 150,
