@@ -71,9 +71,13 @@ export default function (state = initialState, action) {
         })
         .indexOf(action.message.conversation_id);
       state.conversations[i].lastMessage = action.message;
-      state.conversations[i].messages?.splice(0, 0, action.message);
+      if (typeof state.conversations[i].messages === "array")
+        state.conversations[i].messages = [
+          action.message,
+          ...state.conversations[i].messages,
+        ];
 
-      return { ...state };
+      return state;
     case "REQUEST_LOG_OUT:SUCCESS":
       return initialState;
     default:
