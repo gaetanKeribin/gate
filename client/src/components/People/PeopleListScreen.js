@@ -16,9 +16,7 @@ const Item = ({ item, navigation }) => {
   return (
     <TouchableOpacity
       onPress={() => {
-        navigation.navigate("Read", {
-          item,
-        });
+        navigation.navigate("Read", { id: item._id, item });
       }}
     >
       <View

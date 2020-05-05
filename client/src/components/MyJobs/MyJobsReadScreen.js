@@ -13,7 +13,7 @@ const Item = ({ item, navigation }) => {
 
   return (
     <TouchableOpacity
-      onPress={() => navigation.navigate("Edit", { job: item })}
+      onPress={() => navigation.navigate("Edit", { job: item, id: item._id })}
     >
       <View
         style={{

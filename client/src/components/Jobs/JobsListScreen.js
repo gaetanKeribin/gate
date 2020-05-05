@@ -21,6 +21,7 @@ const Item = ({ item, navigation }) => {
       onPress={() =>
         navigation.navigate("Read", {
           job: item,
+          id: item._id,
         })
       }
     >
