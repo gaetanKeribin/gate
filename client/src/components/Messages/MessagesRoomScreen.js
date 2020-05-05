@@ -54,7 +54,14 @@ const RoomScreen = ({ route }) => {
   const { conversation_id } = route.params;
   const [newMessage, setNewMessage] = useState("");
   const { theme } = useContext(ThemeContext);
-  const { chat, auth } = useSelector((state) => state, shallowEqual);
+
+  const { user } = useSelector((state) => state.auth, shallowEqual);
+  const conversation = useSelector(
+    (state) =>
+      state.chat.conversation.filter((conv) => conv._id == conversation_id)[0],
+    shallowEqual
+  );
+
   const dispatch = useDispatch();
   useEffect(() => {
     function fetchData() {
@@ -63,13 +70,9 @@ const RoomScreen = ({ route }) => {
     fetchData();
   }, []);
 
-  const conversation = chat.conversations.filter(
-    (conv) => conv._id == conversation_id
-  )[0];
-
   const onSendMessage = () => {
     const interlocutors = conversation?.participants.filter(
-      (p) => p._id != auth.user._id
+      (p) => p._id != user._id
     );
     dispatch(
       sendPrivateMessage({
@@ -89,7 +92,7 @@ const RoomScreen = ({ route }) => {
           renderItem={({ item }) => (
             <Message
               message={item}
-              incoming={item?.sender !== auth.user._id}
+              incoming={item?.sender !== user._id}
               theme={theme}
             />
           )}
@@ -137,18 +140,4 @@ const RoomScreen = ({ route }) => {
   );
 };
 
-const mapStateToProps = (state) => {
-  return {
-    chat: state.chat,
-    auth: state.auth,
-  };
-};
-
-const mapDispatchToProps = (dispatch) => {
-  return {
-    fetchConversation: (conversation_id) =>
-      dispatch(fetchConversation(conversation_id)),
-  };
-};
-
-export default connect(mapStateToProps, mapDispatchToProps)(RoomScreen);
+export default RoomScreen;
