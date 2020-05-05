@@ -50,7 +50,7 @@ const Message = ({ message, incoming, theme }) => {
   );
 };
 
-const RoomScreen = ({ route, conversation }) => {
+const RoomScreen = ({ route, chat }) => {
   const { conversation_id } = route.params;
   const [newMessage, setNewMessage] = useState("");
   const { theme } = useContext(ThemeContext);
@@ -60,6 +60,10 @@ const RoomScreen = ({ route, conversation }) => {
   //   (state) =>
   //     state.chat.conversations.filter((conv) => conv._id === conversation_id)[0]
   // );
+
+  const conversation = chat.conversations.filter(
+    (conv) => conv._id === conversation_id
+  )[0];
 
   const dispatch = useDispatch();
   useEffect(() => {
@@ -141,9 +145,7 @@ const RoomScreen = ({ route, conversation }) => {
 
 export default connect(
   (state) => ({
-    conversation: state.chat.conversations.filter(
-      (conv) => conv._id === conversation_id
-    )[0],
+    chat: state.chat,
   }),
   {}
 )(RoomScreen);
