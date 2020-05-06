@@ -1,5 +1,5 @@
 const mongoose = require("mongoose");
-const Message = require("./message");
+
 const conversationSchema = new mongoose.Schema({
   title: {
     type: String,

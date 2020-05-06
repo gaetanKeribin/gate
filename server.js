@@ -126,7 +126,6 @@ io.on("connection", async function (socket) {
 
 // Website server
 
-app.use(express.static("client/web-build"));
 if (process.env.NODE_ENV === "test") {
   app.use(express.static("client/web-build"));
 }

@@ -42,20 +42,19 @@ const userSchema = new mongoose.Schema({
   },
   email: {
     type: String,
-    unique: true,
     required: true,
     trim: true,
     lowercase: true,
     validate(value) {
       if (!validator.isEmail(value)) {
-        throw new Error("Email is invalid");
+        throw new Error("Cet email n'est pas valable.");
       }
     },
   },
   password: {
     type: String,
     required: true,
-    minlength: 7,
+    minlength: 8,
     trim: true,
     validate(value) {
       if (value.toLowerCase().includes("password")) {
@@ -104,6 +103,15 @@ const userSchema = new mongoose.Schema({
     },
   ],
 });
+
+userSchema.path("email").validate(function (value, done) {
+  this.model("User").count({ email: value }, function (err, count) {
+    if (err) {
+      return done(err);
+    }
+    done(!count);
+  });
+}, "Email already exists");
 
 userSchema.methods.toJSON = function () {
   const user = this;

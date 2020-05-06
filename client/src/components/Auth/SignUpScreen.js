@@ -1,6 +1,6 @@
 import React, { useState } from "react";
 import { connect } from "react-redux";
-import { View } from "react-native";
+import { ScrollView } from "react-native";
 import { Input, Button, Icon } from "react-native-elements";
 import { signUp } from "../../actions/authActions";
 
@@ -32,13 +32,16 @@ const SignUpScreen = ({ signUp, auth }) => {
   };
 
   return (
-    <View
-      style={{
-        backgroundColor: "white",
-        flex: 1,
+    <ScrollView
+      containerStyle={{
         justifyContent: "center",
         alignItems: "center",
+      }}
+      style={{
+        backgroundColor: "white",
         paddingHorizontal: 12,
+        paddingVertical: 20,
+        flex: 1,
       }}
     >
       <Input
@@ -90,25 +93,16 @@ const SignUpScreen = ({ signUp, auth }) => {
         secureTextEntry
         value={confirmation}
         leftIconContainerStyle={{ marginRight: 12 }}
-        containerStyle={{ marginBottom: 40, marginTop: 8 }}
         onChangeText={(value) => setConfirmation(value)}
         errorMessage={errors.confirmation}
-      />
-      <Input
-        placeholder="Code"
-        leftIcon={<Icon name="code-tags" type="material-community" />}
-        value={code}
-        onChangeText={(value) => setCode(value)}
-        label="Email"
-        errorMessage={errors.code}
       />
       <Button
         title="S'inscrire"
         onPress={handleSignUp}
         loading={auth.isSigningUp}
-        containerStyle={{ marginBottom: 20, marginTop: 8 }}
+        containerStyle={{ marginBottom: 20, marginTop: 40 }}
       />
-    </View>
+    </ScrollView>
   );
 };
 

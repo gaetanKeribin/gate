@@ -1,11 +1,11 @@
 {
   "files": {
-    "app.js": "/static/js/app.b54f3499.chunk.js",
-    "app.js.map": "/static/js/app.b54f3499.chunk.js.map",
+    "app.js": "/static/js/app.30f55cb6.chunk.js",
+    "app.js.map": "/static/js/app.30f55cb6.chunk.js.map",
     "runtime~app.js": "/static/js/runtime~app.34c76111.js",
     "runtime~app.js.map": "/static/js/runtime~app.34c76111.js.map",
-    "static/js/2.bc8b11d3.chunk.js": "/static/js/2.bc8b11d3.chunk.js",
-    "static/js/2.bc8b11d3.chunk.js.map": "/static/js/2.bc8b11d3.chunk.js.map",
+    "static/js/2.4482a540.chunk.js": "/static/js/2.4482a540.chunk.js",
+    "static/js/2.4482a540.chunk.js.map": "/static/js/2.4482a540.chunk.js.map",
     "fonts/AntDesign.ttf": "/./fonts/AntDesign.ttf",
     "fonts/Entypo.ttf": "/./fonts/Entypo.ttf",
     "fonts/Feather.ttf": "/./fonts/Feather.ttf",
@@ -23,13 +23,13 @@
     "serve.json": "/serve.json",
     "static/media/bell.png": "/static/media/bell.a7b9dc9d.png",
     "static/media/heart.png": "/static/media/heart.2327736b.png",
-    "static/media/logo.png": "/static/media/logo.0120364d.png",
+    "static/media/logo.png": "/static/media/logo.ccfb714c.png",
     "static/media/rocket.png": "/static/media/rocket.51671417.png",
     "static/media/star.png": "/static/media/star.004c2bbb.png"
   },
   "entrypoints": [
     "static/js/runtime~app.34c76111.js",
-    "static/js/2.bc8b11d3.chunk.js",
-    "static/js/app.b54f3499.chunk.js"
+    "static/js/2.4482a540.chunk.js",
+    "static/js/app.30f55cb6.chunk.js"
   ]
 }
