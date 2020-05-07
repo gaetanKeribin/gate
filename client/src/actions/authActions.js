@@ -38,6 +38,11 @@ export const logOut = () => {
     route: "/auth/logout",
     method: "GET",
     errorNotification: true,
+    successNotification: {
+      message: "Au revoir !",
+      variant: "success",
+      redirect: "Auth",
+    },
   };
 };
 
