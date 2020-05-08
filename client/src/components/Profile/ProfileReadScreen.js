@@ -23,6 +23,7 @@ import {
 import { LinearGradient } from "expo-linear-gradient";
 import _ from "lodash";
 import AppNavbar from "../AppNavbar";
+import { apiConfig } from "../../config";
 
 const ReadProfileScreen = ({ navigation }) => {
   const [showAvatarForm, setShowAvatarForm] = useState(false);
@@ -129,7 +130,7 @@ const ReadProfileScreen = ({ navigation }) => {
                     borderWidth: 3,
                   }}
                   source={{
-                    uri: `http://localhost:8080/api/files/avatars/${user.avatar}`,
+                    uri: `${apiConfig.baseUrl}/api/files/avatars/${user.avatar}`,
                   }}
                   onPress={() => setShowAvatarForm(!showAvatarForm)}
                 />

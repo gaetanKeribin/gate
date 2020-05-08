@@ -11,8 +11,10 @@ import { Avatar, Icon } from "react-native-elements";
 import theme from "../../Theme.json";
 import { fetchUsers } from "../../actions/usersActions";
 import _ from "lodash";
+import { apiConfig } from "../../config";
 
 const Item = ({ item, navigation }) => {
+  if (!item) return null;
   return (
     <TouchableOpacity
       onPress={() => {
@@ -39,17 +41,17 @@ const Item = ({ item, navigation }) => {
             marginRight: 12,
           }}
         >
-          {item?.avatar ? (
+          {item.avatar ? (
             <Avatar
               source={{
-                uri: `https://siee-gate.herokuapp.com/api/files/avatar/${item?.avatar?.filename}`,
+                uri: `${apiConfig.baseUrl}/api/files/avatars/${item.avatar}`,
               }}
               size="medium"
             />
           ) : (
             <Avatar
               size="medium"
-              title={item?.firstname[0].concat(item?.lastname[0]).toUpperCase()}
+              title={item.firstname[0].concat(item.lastname[0]).toUpperCase()}
             />
           )}
         </View>
@@ -61,18 +63,18 @@ const Item = ({ item, navigation }) => {
               fontSize: 16,
             }}
           >
-            {_.capitalize(item?.firstname)} {_.capitalize(item?.lastname)}
+            {_.capitalize(item.firstname)} {_.capitalize(item.lastname)}
           </Text>
           <View style={{ flexDirection: "row", flex: 1, alignItems: "center" }}>
             <Icon name="account-card-details" size={20} />
             <Text style={{ textAlignVertical: "bottom", marginStart: 8 }}>
-              {item?.jobTitle} chez {item?.organisation}
+              {item.jobTitle} chez {item.organisation}
             </Text>
           </View>
           <View style={{ flexDirection: "row", flex: 1, alignItems: "center" }}>
             <Icon name="school" size={20} />
             <Text style={{ textAlignVertical: "bottom", marginStart: 8 }}>
-              SIEE promotion {item?.promo}
+              SIEE promotion {item.promo}
             </Text>
           </View>
         </View>
@@ -83,7 +85,7 @@ const Item = ({ item, navigation }) => {
 
 const PeopleScreen = ({ navigation }) => {
   const dispatch = useDispatch();
-  const { users, auth } = useSelector((state) => state);
+  const { users } = useSelector((state) => state);
   useEffect(() => {
     function fetchData() {
       dispatch(fetchUsers());
@@ -107,7 +109,7 @@ const PeopleScreen = ({ navigation }) => {
           renderItem={({ item }) => (
             <Item item={item} navigation={navigation} />
           )}
-          keyExtractor={(item) => item?._id}
+          keyExtractor={(item) => item._id}
         />
       ) : (
         <View

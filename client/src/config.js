@@ -1,3 +1,3 @@
 export const apiConfig = {
-  baseUrl: "https://siee-gate-test.herokuapp.com/api/",
+  baseUrl: process.env.SERVER_URL || "http://localhost:8080",
 };

@@ -28,19 +28,19 @@ const SearchResultItem = ({ item, theme, navigation, chat, dispatch }) => {
   const [showMessageForm, setShowMessageForm] = useState(false);
   const [newMessage, setNewMessage] = useState("");
   const fullName =
-    _.capitalize(item?.firstname) + " " + _.capitalize(item?.lastname);
+    _.capitalize(item.firstname) + " " + _.capitalize(item.lastname);
 
   return (
     <TouchableOpacity
       onPress={
-        chat.interlocutorsIds.includes(item?._id)
+        chat.interlocutorsIds.includes(item._id)
           ? () =>
               navigation.navigate("Room", {
                 title: fullName,
                 conversation: chat.convIdsWithPartsIds
                   .filter(
                     (element) =>
-                      element.participants.includes(item?._id) === true
+                      element.participants.includes(item._id) === true
                   )
                   .filter((conv) => conv.participants.length === 2)[0],
               })
@@ -50,7 +50,7 @@ const SearchResultItem = ({ item, theme, navigation, chat, dispatch }) => {
                   form: {
                     action: sendMessage,
                     inputName: "text",
-                    actionParams: { recipients: [item?._id] },
+                    actionParams: { recipients: [item._id] },
                     message: "Demarrer une conversation avec " + fullName,
                   },
                 })
@@ -75,17 +75,17 @@ const SearchResultItem = ({ item, theme, navigation, chat, dispatch }) => {
             marginRight: 12,
           }}
         >
-          {item?.avatar ? (
+          {item.avatar ? (
             <Avatar
               source={{
-                uri: `https://siee-gate.herokuapp.com/api/files/avatar/${item?.avatar?.filename}`,
+                uri: `${apiConfig.baseUrl}/api/files/avatar/${item.avatar?.filename}`,
               }}
               size="small"
             />
           ) : (
             <Avatar
               size="small"
-              title={item?.firstname[0].concat(item?.lastname[0]).toUpperCase()}
+              title={item.firstname[0].concat(item.lastname[0]).toUpperCase()}
             />
           )}
         </View>
@@ -130,7 +130,7 @@ const SearchResultItem = ({ item, theme, navigation, chat, dispatch }) => {
               disabled={!newMessage}
               type="clear"
               onPress={() => {
-                onSendMessage(newMessage, item?._id);
+                onSendMessage(newMessage, item._id);
                 setNewMessage("");
                 setShowMessageForm(false);
               }}
@@ -145,19 +145,19 @@ const SearchResultItem = ({ item, theme, navigation, chat, dispatch }) => {
 const Item = ({ item, navigation, auth, theme, dispatch }) => {
   const listParticipants = () => {
     _.remove(
-      item?.participants,
+      item.participants,
       (participant) => participant._id === auth?.user._id
     );
 
-    if (item?.participants?.length > 1) {
-      const participantsList = item?.participants?.map((participant) =>
+    if (item.participants?.length > 1) {
+      const participantsList = item.participants?.map((participant) =>
         _.capitalize(participant.firstname)
       );
       return participantsList.toString().replace(",", ", ");
-    } else if (item?.participants?.length === 1) {
-      return _.capitalize(item?.participants[0]?.firstname).concat(
+    } else if (item.participants?.length === 1) {
+      return _.capitalize(item.participants[0]?.firstname).concat(
         " ",
-        _.capitalize(item?.participants[0]?.lastname)
+        _.capitalize(item.participants[0]?.lastname)
       );
     } else {
       return "Compte supprimé";
@@ -166,6 +166,8 @@ const Item = ({ item, navigation, auth, theme, dispatch }) => {
 
   const title = listParticipants();
   const participants = listParticipants(item);
+
+  if (!item) return null;
 
   return (
     <TouchableOpacity
@@ -193,18 +195,18 @@ const Item = ({ item, navigation, auth, theme, dispatch }) => {
               paddingRight: 8,
             }}
           >
-            {item?.participants[0]?.avatar ? (
+            {item.participants[0]?.avatar ? (
               <Avatar
                 source={{
-                  uri: `${apiConfig.baseUrl}/files/avatar/${item?.participants[0]?.avatar?.filename}`,
+                  uri: `${apiConfig.baseUrl}/api/files/avatars/${item.participants[0]?.avatar}`,
                 }}
                 size="medium"
               />
             ) : (
               <Avatar
                 size="medium"
-                title={item?.participants[0]?.firstname[0]
-                  .concat(item?.participants[0]?.lastname[0])
+                title={item.participants[0]?.firstname[0]
+                  .concat(item.participants[0]?.lastname[0])
                   .toUpperCase()}
               />
             )}
@@ -239,7 +241,7 @@ const Item = ({ item, navigation, auth, theme, dispatch }) => {
                 }}
               >
                 {_.capitalize(
-                  moment(item?.lastMessage?.sentAt).locale("fr").fromNow()
+                  moment(item.lastMessage?.sentAt).locale("fr").fromNow()
                 )}
               </Text>
             </View>
@@ -247,7 +249,7 @@ const Item = ({ item, navigation, auth, theme, dispatch }) => {
               <View
                 style={{ alignContent: "center", justifyContent: "center" }}
               >
-                {item?.lastMessage?.sender === auth?.user._id ? (
+                {item.lastMessage?.sender === auth?.user._id ? (
                   <Icon
                     name="arrow-top-right"
                     color={theme.colors.grey1}
@@ -268,7 +270,7 @@ const Item = ({ item, navigation, auth, theme, dispatch }) => {
                   flex: 1,
                 }}
               >
-                {item?.lastMessage?.text}
+                {item.lastMessage?.text}
               </Text>
             </View>
           </View>
@@ -339,7 +341,7 @@ const ChatLobbyScreen = ({ navigation }) => {
                 dispatch={dispatch}
               />
             )}
-            keyExtractor={(item) => item?._id}
+            keyExtractor={(item) => item._id}
           />
         )}
         {!users.isLoaded && (
@@ -367,7 +369,7 @@ const ChatLobbyScreen = ({ navigation }) => {
                 dispatch={dispatch}
               />
             )}
-            keyExtractor={(item) => item?._id}
+            keyExtractor={(item) => item._id}
             refreshControl={
               <RefreshControl refreshing={refreshing} onRefresh={onRefresh} />
             }

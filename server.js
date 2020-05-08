@@ -116,6 +116,7 @@ io.on("connection", async function (socket) {
     socket.emit("private-message-ack", { message });
   });
 });
+app.use(express.static("client/web-build"));
 
 // Website server
 if (process.env.NODE_ENV === "test") {

@@ -20,7 +20,7 @@ export const socketMiddleware = () => {
       action.type === "REQUEST_VERIFY_TOKEN:SUCCESS"
     ) {
       const { token } = action.data;
-      socket = io(apiConfig.baseUrl.replace("/api/", ""), {
+      socket = io(apiConfig.baseUrl, {
         forceNode: true,
         transportOptions: {
           polling: {
@@ -89,7 +89,7 @@ export const axiosMiddleware = (store) => (next) => (action) => {
     let https;
     if (action.type.substring(0, 14) === "REQUEST_UPLOAD") {
       https = axios.create({
-        baseURL: apiConfig.baseUrl,
+        baseURL: apiConfig.baseUrl + "/api/",
         timeout: 3000,
         headers: {
           accept: "application/json",
@@ -100,7 +100,7 @@ export const axiosMiddleware = (store) => (next) => (action) => {
       });
     } else {
       https = axios.create({
-        baseURL: apiConfig.baseUrl,
+        baseURL: apiConfig.baseUrl + "/api/",
         timeout: 3000,
         headers: {
           "Access-Control-Allow-Origin": "*",
