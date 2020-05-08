@@ -1,6 +1,7 @@
 import { createStore, applyMiddleware, compose } from "redux";
 import thunk from "redux-thunk";
 import rootReducer from "./reducers/index";
+import { Platform } from "react-native";
 import {
   socketMiddleware,
   axiosMiddleware,
@@ -18,13 +19,11 @@ const persistConfig = {
 };
 
 const persistedReducer = persistReducer(persistConfig, rootReducer);
-const middlewares = [
-  thunk,
-  devMiddleware,
-  axiosMiddleware,
-  socketMiddleware(),
-  logger,
-];
+const middlewares = [thunk, devMiddleware, axiosMiddleware, socketMiddleware()];
+
+if (Platform.OS === "web") {
+  middlewares.push(logger);
+}
 
 const store = createStore(persistedReducer, applyMiddleware(...middlewares));
 

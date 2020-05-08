@@ -146,7 +146,7 @@ const Item = ({ item, navigation, auth, theme, dispatch }) => {
   const listParticipants = () => {
     _.remove(
       item?.participants,
-      (participant) => participant._id === auth.user._id
+      (participant) => participant._id === auth?.user._id
     );
 
     if (item?.participants?.length > 1) {
@@ -247,7 +247,7 @@ const Item = ({ item, navigation, auth, theme, dispatch }) => {
               <View
                 style={{ alignContent: "center", justifyContent: "center" }}
               >
-                {item?.lastMessage?.sender === auth.user._id ? (
+                {item?.lastMessage?.sender === auth?.user._id ? (
                   <Icon
                     name="arrow-top-right"
                     color={theme.colors.grey1}
@@ -270,33 +270,6 @@ const Item = ({ item, navigation, auth, theme, dispatch }) => {
               >
                 {item?.lastMessage?.text}
               </Text>
-              {/* <View
-                style={{
-                  flexDirection: "row",
-                  alignContent: "center",
-                  justifyContent: "center",
-                }}
-              >
-                <Icon
-                  name="dots-horizontal"
-                  style={{ alignSelf: "flex-end" }}
-                  onPress={() =>
-                    dispatch(
-                      showOverlay({
-                        menu: {
-                          buttons: [
-                            {
-                              title: "Supprimer la conversation",
-                              action: deleteConversation,
-                              actionParams: [item?._id],
-                            },
-                          ],
-                        },
-                      })
-                    )
-                  }
-                />
-              </View> */}
             </View>
           </View>
         </View>
@@ -329,7 +302,7 @@ const ChatLobbyScreen = ({ navigation }) => {
   const searchProcess = () => {
     const searchResults = [];
     users.users?.forEach((user) => {
-      if (user._id !== auth.user._id) {
+      if (user._id !== auth?.user._id) {
         if (
           user.firstname.includes(search.toLowerCase()) === true ||
           user.lastname.includes(search.toLowerCase())

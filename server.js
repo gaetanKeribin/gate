@@ -21,16 +21,9 @@ const app = express();
 const port = process.env.PORT || 8080;
 
 require("./config/mongoose");
-
-app.use(
-  require("express-fileupload")({
-    createParentPath: true,
-  })
-);
 app.use(require("cors")());
 app.use(require("method-override")("X-HTTP-Method-Override"));
 app.use(express.json());
-app.use(require("cors")());
 
 app.use("/api/users", usersRouter);
 app.use("/api/jobs", jobsRouter);
@@ -125,8 +118,6 @@ io.on("connection", async function (socket) {
 });
 
 // Website server
-app.use(express.static("client/web-build"));
-
 if (process.env.NODE_ENV === "test") {
   app.use(express.static("client/web-build"));
 }

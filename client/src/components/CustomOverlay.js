@@ -187,6 +187,7 @@ const CustomOverlay = () => {
         position: "absolute",
         height: Dimensions.get("window").height,
         width: Dimensions.get("window").width,
+        maxWidth: 500,
         backgroundColor: theme.colors.grey6,
         alignContent: "center",
         justifyContent: "center",

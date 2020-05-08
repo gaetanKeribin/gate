@@ -174,6 +174,7 @@ const AppStack = (props) => {
 
 const App = () => {
   React.useEffect(() => {
+    console.log("Platform.OS", Platform.OS);
     isMountedRef.current = true;
     return () => (isMountedRef.current = false);
   }, []);

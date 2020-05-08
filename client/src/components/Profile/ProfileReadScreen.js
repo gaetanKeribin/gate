@@ -1,5 +1,5 @@
 import React, { useState, useContext } from "react";
-import { connect } from "react-redux";
+import { useSelector, useDispatch } from "react-redux";
 import {
   Avatar,
   Divider,
@@ -7,32 +7,55 @@ import {
   Button,
   ThemeContext,
 } from "react-native-elements";
-import { View, Text, ScrollView, ActivityIndicator } from "react-native";
+import {
+  View,
+  Text,
+  ScrollView,
+  ActivityIndicator,
+  Platform,
+} from "react-native";
 import * as ImagePicker from "expo-image-picker";
-import { uploadFile, deleteFile } from "../../actions/filesActions";
+import {
+  uploadFile,
+  deleteFile,
+  dataURLtoBlob,
+} from "../../actions/filesActions";
 import { LinearGradient } from "expo-linear-gradient";
 import _ from "lodash";
 import AppNavbar from "../AppNavbar";
 
-const ReadProfileScreen = ({ uploadFile, auth, navigation, deleteFile }) => {
+const ReadProfileScreen = ({ navigation }) => {
   const [showAvatarForm, setShowAvatarForm] = useState(false);
   const { theme } = useContext(ThemeContext);
+  const { user } = useSelector((state) => state.auth);
+  const dispatch = useDispatch();
 
   const editAvatar = () => {
     const selectPicture = async () => {
       await ImagePicker.requestCameraRollPermissionsAsync();
 
-      const picture = await ImagePicker.launchImageLibraryAsync({
+      const file = await ImagePicker.launchImageLibraryAsync({
         allowsEditing: true,
       });
 
-      !picture.cancelled && uploadFile(picture, "avatar");
+      if (file.cancelled) return;
+
+      if (Platform.OS === "web") {
+        let blob = dataURLtoBlob(file.uri);
+        console.log("selectPicture -> blob", blob);
+        dispatch(uploadFile(blob, "avatars"));
+      } else {
+        let res = await fetch(file.uri);
+        console.log("selectPicture -> res", res);
+        let blob = await res.blob();
+        console.log("selectPicture -> blob", blob);
+        dispatch(uploadFile(blob, "avatars"));
+      }
     };
     selectPicture();
     setShowAvatarForm(false);
   };
 
-  const { user } = auth;
   return (
     <View
       style={{
@@ -45,7 +68,7 @@ const ReadProfileScreen = ({ uploadFile, auth, navigation, deleteFile }) => {
         leftButton="back"
         noRightButton={true}
       />
-      {auth.user ? (
+      {user ? (
         <View
           style={{
             flex: 1,
@@ -87,9 +110,15 @@ const ReadProfileScreen = ({ uploadFile, auth, navigation, deleteFile }) => {
                 >
                   {_.capitalize(user.lastname)}
                 </Text>
-                {user.professor && <Text>Professeur</Text>}
+                {user.professor && (
+                  <Text style={{ color: theme.colors.grey4, paddingLeft: 4 }}>
+                    Professeur
+                  </Text>
+                )}
                 {user.administration && (
-                  <Text>Membre du corps administratif</Text>
+                  <Text style={{ color: theme.colors.grey4, paddingLeft: 4 }}>
+                    Membre du corps administratif
+                  </Text>
                 )}
               </View>
               {user.avatar ? (
@@ -100,7 +129,7 @@ const ReadProfileScreen = ({ uploadFile, auth, navigation, deleteFile }) => {
                     borderWidth: 3,
                   }}
                   source={{
-                    uri: `https://siee-gate.herokuapp.com/api/files/avatar/${user.avatar?.filename}`,
+                    uri: `http://localhost:8080/api/files/avatars/${user.avatar}`,
                   }}
                   onPress={() => setShowAvatarForm(!showAvatarForm)}
                 />
@@ -118,24 +147,24 @@ const ReadProfileScreen = ({ uploadFile, auth, navigation, deleteFile }) => {
                   onPress={() => setShowAvatarForm(!showAvatarForm)}
                 />
               )}
-              {showAvatarForm && (
-                <View
-                  style={{
-                    paddingHorizontal: 4,
-                    alignContent: "center",
-                    justifyContent: "center",
+              <View
+                style={{
+                  marginLeft: -40,
+                  justifyContent: "space-between",
+                }}
+              >
+                <Button
+                  icon={<Icon name="pencil" color={theme.colors.secondary} />}
+                  onPress={() => editAvatar()}
+                  buttonStyle={{
+                    elevation: 10,
+                    backgroundColor: theme.colors.primaryLight,
+                    width: 40,
+                    height: 40,
+                    borderRadius: 40,
                   }}
-                >
-                  <Button
-                    icon={<Icon name="pencil" color={theme.colors.grey4} />}
-                    onPress={() => editAvatar()}
-                    buttonStyle={{
-                      backgroundColor: theme.colors.primaryLight,
-                      width: 40,
-                      height: 40,
-                      borderRadius: 40,
-                    }}
-                  />
+                />
+                {user.avatar && (
                   <Button
                     icon={<Icon name="delete" color={theme.colors.grey4} />}
                     buttonStyle={{
@@ -144,10 +173,10 @@ const ReadProfileScreen = ({ uploadFile, auth, navigation, deleteFile }) => {
                       height: 40,
                       borderRadius: 40,
                     }}
-                    onPress={() => deleteFile("avatar", user.avatar?.filename)}
+                    onPress={() => dispatch(deleteFile("avatars", user.avatar))}
                   />
-                </View>
-              )}
+                )}
+              </View>
             </LinearGradient>
             <View style={{ flexDirection: "row", alignItems: "center" }}>
               <Icon name="briefcase" size={20} color="grey" />
@@ -208,7 +237,7 @@ const ReadProfileScreen = ({ uploadFile, auth, navigation, deleteFile }) => {
               </Text>
             </View>
           </ScrollView>
-          <View>
+          <View style={{ paddingHorizontal: 20 }}>
             <Button
               title="Editer"
               onPress={() => navigation.navigate("Edit")}
@@ -226,15 +255,4 @@ const ReadProfileScreen = ({ uploadFile, auth, navigation, deleteFile }) => {
   );
 };
 
-const mapStateToProps = (state) => ({
-  auth: state.auth,
-});
-
-const mapDispatchToProps = (dispatch) => {
-  return {
-    uploadFile: (file, type) => dispatch(uploadFile(file, type)),
-    deleteFile: (bucketName, id) => dispatch(deleteFile(bucketName, id)),
-  };
-};
-
-export default connect(mapStateToProps, mapDispatchToProps)(ReadProfileScreen);
+export default ReadProfileScreen;

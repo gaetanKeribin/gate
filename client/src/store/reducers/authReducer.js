@@ -1,19 +1,14 @@
 const initialState = {
   isLoggingIn: false,
   isLoggingOut: false,
-  isFetchingUserInfo: false,
+  isSigningUp: false,
   isLoggedIn: false,
+  isDeletingAccount: false,
   loggedInAt: null,
   user: null,
   userInfoUpdatedAt: null,
-  userInfoError: null,
-  authError: null,
-  logOutError: null,
-  isSigningUp: false,
   token: null,
-  userInfoUpdatedAt: null,
-  signUpError: null,
-  isDeletingAccount: false,
+  errors: [],
 };
 
 export default function (state = initialState, action) {
@@ -27,13 +22,11 @@ export default function (state = initialState, action) {
       return {
         ...state,
         isSigningUp: true,
-        signUpError: null,
       };
     case "REQUEST_SIGN_UP":
       return {
         ...state,
         isSigningUp: true,
-        signUpError: null,
       };
     case "REQUEST_LOG_IN":
       return {
@@ -102,6 +95,11 @@ export default function (state = initialState, action) {
       };
 
     // SUCCESS
+    case "REQUEST_UPDATE_PASSWORD:SUCCESS":
+      return state;
+    case "REQUEST_DELETE_ACCOUNT:SUCCESS":
+    case "REQUEST_LOG_OUT:SUCCESS":
+      return initialState;
     case "REQUEST_VERIFY_TOKEN:SUCCESS":
       return {
         ...state,
@@ -114,7 +112,6 @@ export default function (state = initialState, action) {
         isLoggedIn: true,
         loggedInAt: action.receivedAt,
         userInfoUpdatedAt: action.receivedAt,
-        logInError: null,
         ...action.data,
       };
     case "REQUEST_SIGN_UP:SUCCESS":
@@ -126,16 +123,11 @@ export default function (state = initialState, action) {
         loggedInAt: action.receivedAt,
         isLoggedIn: true,
         userInfoUpdatedAt: action.receivedAt,
-        signUpError: null,
         ...action.data,
       };
-    case "REQUEST_DELETE_ACCOUNT:SUCCESS":
-    case "REQUEST_LOG_OUT:SUCCESS":
-      return initialState;
     case "REQUEST_UPDATE_USER:SUCCESS":
       return {
         ...state,
-        updateUserError: null,
         isUpdatingUser: false,
         userInfoUpdatedAt: action.receivedAt,
         ...action.data,
@@ -144,18 +136,10 @@ export default function (state = initialState, action) {
       return {
         ...state,
         isFetching: false,
-        fetchMyJobsError: null,
         lastUpdatedAt: action.receivedAt,
         isLoaded: true,
         ...action.data,
       };
-    case "REQUEST_UPLOAD_FILE:SUCCESS":
-      return {
-        ...state,
-        ...action.data,
-      };
-    case "REQUEST_UPDATE_PASSWORD:SUCCESS":
-      return { ...state, updatePasswordError: null };
     case "REQUEST_UPDATE_JOB:SUCCESS":
       return {
         ...state,
@@ -170,57 +154,27 @@ export default function (state = initialState, action) {
           jobs: [action.data.job, ...state.user.jobs],
         },
       };
+    case "REQUEST_DELETE_FILE:SUCCESS":
+    case "REQUEST_UPLOAD_FILE:SUCCESS":
+      return {
+        ...state,
+        user: action.data.updatedUser,
+      };
 
     // ERRORS
 
     case "REQUEST_VERIFY_TOKEN:ERROR":
       return initialState;
     case "REQUEST_MY_JOBS:ERROR":
-      return {
-        ...state,
-        isFetching: false,
-        lastUpdatedAt: action.receivedAt,
-        isLoaded: true,
-        fetchMyJobsError:
-          "Vos offres d'emploi n'ont pas pu être récupérées, essayez de nouveau.",
-      };
     case "REQUEST_UPDATE_USER:ERROR":
-      return {
-        ...state,
-        isUpdatingUser: false,
-        updateUserError:
-          "Cela n'a pas marché. Peut-être le mot de passe était-il incorrect.",
-      };
     case "REQUEST_UPDATE_PASSWORD:ERROR":
-      return {
-        ...state,
-        isUpdatingPassword: false,
-        updatePasswordError:
-          "Cela n'a pas marché. Peut-être le mot de passe était-il incorrect.",
-      };
     case "REQUEST_LOG_IN:ERROR":
-      return {
-        ...state,
-        logInError:
-          "Cela n'a pas marché. Peut-être le mot de passe était-il incorrect.",
-        isLoggingIn: false,
-      };
     case "REQUEST_SIGN_UP:ERROR":
-      return {
-        ...state,
-        isSigningUp: false,
-        signUpError: "Cela n'a pas marché, essayez un autre email.",
-      };
     case "REQUEST_UPDATE_JOB:ERROR":
-      return {
-        ...state,
-        ...action.state,
-        isUpdatingJob: false,
-      };
     case "REQUEST_CREATE_JOB:ERROR":
       return {
         ...state,
-        ...action.state,
+        errors: [...state.errors, action],
       };
     default:
       return state;

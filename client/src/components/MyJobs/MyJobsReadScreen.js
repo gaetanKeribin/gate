@@ -84,7 +84,7 @@ const MyJobsScreen = ({ auth, navigation, fetchMyJobs }) => {
         leftButton="back"
       />
       <FlatList
-        data={auth.user.jobs}
+        data={auth?.user.jobs}
         renderItem={({ item }) => <Item item={item} navigation={navigation} />}
         keyExtractor={(item) => item?._id}
       />

@@ -66,7 +66,7 @@ router.post("/", authenticate, async (req, res, next) => {
     req.user.jobs = [...req.user.jobs, job._id];
     await req.user.save();
     console.log("Job posted");
-    res.status(200).send({ job });
+    res.status(201).send({ job });
   } catch (err) {
     next(err);
   }

@@ -1,93 +1,134 @@
 const router = require("express").Router();
 const { authenticate } = require("../middleware/authenticate");
-const path = require("path");
-const fs = require("fs");
+const multer = require("multer");
+const mongoose = require("mongoose");
+const crypto = require("crypto");
+const { Readable } = require("stream");
 
-router.get("/:bucketName/:id", function(req, res, next) {
-  console.log(
-    "fetching file",
-    req.params.id,
-    "in",
-    path.join(__dirname, `../public/${req.params.bucketName}/`)
-  );
+router.post("/:bucketName", authenticate, async (req, res, next) => {
+  try {
+    const storage = multer.memoryStorage();
+    const upload = multer({
+      storage: storage,
+      limits: { fieldSize: 2 * 1024 * 1024, files: 1 },
+    });
 
-  const options = {
-    root: path.join(__dirname, `../public/${req.params.bucketName}`),
-    dotfiles: "deny",
-    headers: {
-      "x-timestamp": Date.now(),
-      "x-sent": true
-    }
-  };
+    upload.single("file")(req, res, (err) => {
+      const { name } = req.body;
+      const { bucketName } = req.params;
+      if (err) {
+        // console.log("err", err);
+        return res
+          .status(400)
+          .json({ message: "Upload Request Validation Failed" });
+      } else if (!bucketName) {
+        return res
+          .status(400)
+          .json({ message: "No bucketName name in request body" });
+      }
 
-  const fileName = req.params.id;
-  res.sendFile(fileName, options, function(err) {
-    if (err) {
-      next(err);
-    } else {
-      console.log("Sent:", fileName);
-    }
+      // Convert buffer to Readable Stream
+      const readableTrackStream = new Readable();
+
+      readableTrackStream.push(req.file.buffer);
+      readableTrackStream.push(null);
+      // console.log("readableTrackStream", readableTrackStream);
+
+      let bucket = new mongoose.mongo.GridFSBucket(mongoose.connection.db, {
+        bucketName,
+      });
+
+      let uploadStream = bucket.openUploadStream(
+        name || crypto.randomBytes(16),
+        {
+          chunkSizeBytes: null,
+          metadata: { owner: req.user._id },
+          contentType: null,
+          aliases: null,
+        }
+      );
+
+      let id = uploadStream.id;
+      readableTrackStream.pipe(uploadStream);
+
+      uploadStream.on("error", (err) => {
+        next(err);
+        return res.status(500).json({ message: "Error uploading file" });
+      });
+      uploadStream.on("finish", async () => {
+        if (Array.isArray(req.user[bucketName])) {
+          req.user[bucketName].push(id);
+        } else {
+          req.user[bucketName.slice(0, -1)] = id;
+        }
+        await req.user.save();
+
+        res.status(201).send({ updatedUser: req.user });
+      });
+    });
+  } catch (error) {
+    next(err);
+  }
+});
+
+router.get("/:bucketName/:fileId", async (req, res, next) => {
+  const { bucketName } = req.params;
+  try {
+    var fileId = new mongoose.mongo.ObjectID(req.params.fileId);
+  } catch (err) {
+    return res.status(400).json({
+      message:
+        "Invalid trackID in URL parameter. Must be a single String of 12 bytes or a string of 24 hex characters",
+    });
+  }
+
+  let bucket = new mongoose.mongo.GridFSBucket(mongoose.connection.db, {
+    bucketName,
+  });
+
+  res.set("content-type", "image/jpeg");
+  res.set("accept-ranges", "bytes");
+  let downloadStream = bucket.openDownloadStream(fileId);
+
+  downloadStream.on("data", (chunk) => {
+    res.write(chunk);
+  });
+
+  downloadStream.on("error", () => {
+    res.sendStatus(404);
+  });
+
+  downloadStream.on("end", () => {
+    res.end();
   });
 });
 
-router.post("/", authenticate, async (req, res, next) => {
+router.delete("/:bucketName/:fileId", authenticate, async (req, res, next) => {
+  const { bucketName } = req.params;
   try {
-    if (!req.files) {
-      res.send({
-        status: false,
-        message: "No file uploaded"
-      });
-    } else {
-      const bucketNames = Object.keys(req.files);
-
-      bucketNames.forEach(async bucketName => {
-        // save file to bucket
-        let file = req.files[bucketName];
-        let temp = file.name.split(".");
-        let ext = temp[temp.length - 1];
-        let filename = `${req.user._id}.${ext}`;
-        let dest = path.join(__dirname, `../public/${bucketName}/${filename}`);
-        file.mv(dest);
-
-        // save file info to user
-        req.user[bucketName] = {
-          mimetype: file.mimetype,
-          ext,
-          filename
-        };
-        await req.user.save();
-
-        res.send({ user: req.user });
-      });
-    }
+    var fileId = new mongoose.mongo.ObjectID(req.params.fileId);
   } catch (err) {
-    res.status(500).send(err);
-  }
-});
-
-router.delete("/:bucketName/:filename", authenticate, (req, res, next) => {
-  console.log("attempting to delete file");
-  try {
-    let dest = path.join(
-      __dirname,
-      `../public/${req.params.bucketName}/${req.params.filename}`
-    );
-    fs.unlink(dest, async () => {
-      console.log("file deleted");
-
-      req.user.avatar = null;
-      await req.user.save();
-      res.status(200).send();
+    return res.status(400).json({
+      message:
+        "Invalid trackID in URL parameter. Must be a single String of 12 bytes or a string of 24 hex characters",
     });
-  } catch (error) {
-    next(error);
   }
-});
 
-router.get("/", async (req, res) => {
   try {
-    const files = await gfs.files.find().toArray();
-    return res.send(files);
+    let bucket = new mongoose.mongo.GridFSBucket(mongoose.connection.db, {
+      bucketName,
+    });
+
+    await bucket.delete(fileId);
+
+    if (Array.isArray(req.user[bucketName])) {
+      _.remove(req.user[bucketName], (file_id) => file_id === fileId);
+    } else {
+      req.user[bucketName.slice(0, -1)] = null;
+    }
+    await req.user.save();
+
+    res.status(200).send({ updatedUser: req.user });
   } catch (error) {}
 });
 

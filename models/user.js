@@ -89,6 +89,10 @@ const userSchema = new mongoose.Schema({
       },
     },
   ],
+  avatar: {
+    type: mongoose.Schema.Types.ObjectId,
+    ref: "avatar.files",
+  },
   jobs: [{ type: mongoose.Schema.Types.ObjectId, ref: "Job" }],
   privateConversations: [
     {

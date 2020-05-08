@@ -15,12 +15,8 @@ const PeopleScreen = ({ route, navigation }) => {
   const fullname =
     _.capitalize(item?.firstname) + " " + _.capitalize(item?.lastname);
 
-  return (
-    <View
-      style={{
-        flex: 1,
-      }}
-    >
+  if (item) {
+    return (
       <View
         style={{
           flex: 1,
@@ -62,6 +58,16 @@ const PeopleScreen = ({ route, navigation }) => {
               >
                 {_.capitalize(item?.lastname)}
               </Text>
+              {item.professor && (
+                <Text style={{ color: theme.colors.grey4, paddingLeft: 4 }}>
+                  Professeur
+                </Text>
+              )}
+              {item.administration && (
+                <Text style={{ color: theme.colors.grey4, paddingLeft: 4 }}>
+                  Membre du corps administratif
+                </Text>
+              )}
             </View>
             {item?.avatar ? (
               <Avatar
@@ -147,41 +153,47 @@ const PeopleScreen = ({ route, navigation }) => {
             </Text>
           </View>
         </ScrollView>
-        <Button
-          title="Contacter"
-          onPress={() => {
-            let a = auth.user.privateConversations.filter(
-              (c) => c.interlocutor_id == item._id
-            );
-            if (a.length > 0) {
-              navigation.navigate("Messages", {
-                screen: "Room",
-                params: {
-                  title: fullname,
-                  conversation_id: a[0].conversation_id,
-                },
-              });
-            } else
-              dispatch(
-                showOverlay({
-                  form: {
-                    action: startPrivateConversation,
-                    inputName: "text",
-                    actionParams: { recipient: item?._id },
-                    message:
-                      "Demarrer une conversation avec " +
-                      _.capitalize(item?.firstname) +
-                      " " +
-                      _.capitalize(item?.lastname),
-                  },
-                  redirect: "Messages",
-                })
-              );
-          }}
-        />
+        {item._id !== auth.user._id && (
+          <View>
+            <Button
+              title="Contacter"
+              onPress={() => {
+                let a = auth?.user.privateConversations.filter(
+                  (c) => c.interlocutor_id == item._id
+                );
+                if (a.length > 0) {
+                  navigation.navigate("Messages", {
+                    screen: "Room",
+                    params: {
+                      title: fullname,
+                      conversation_id: a[0].conversation_id,
+                    },
+                  });
+                } else
+                  dispatch(
+                    showOverlay({
+                      form: {
+                        action: startPrivateConversation,
+                        inputName: "text",
+                        actionParams: { recipient: item?._id },
+                        message:
+                          "Demarrer une conversation avec " +
+                          _.capitalize(item?.firstname) +
+                          " " +
+                          _.capitalize(item?.lastname),
+                      },
+                      redirect: "Messages",
+                    })
+                  );
+              }}
+            />
+          </View>
+        )}
       </View>
-    </View>
-  );
+    );
+  } else {
+    return null;
+  }
 };
 
 export default PeopleScreen;

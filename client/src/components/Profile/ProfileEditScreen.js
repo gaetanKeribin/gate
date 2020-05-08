@@ -15,15 +15,15 @@ const ProfileEditScreen = ({
   updateUserPassword,
 }) => {
   const { theme } = useContext(ThemeContext);
-  const [desc, setDesc] = useState(auth.user.description);
-  const [email, setEmail] = useState(auth.user.email);
-  const [jobTitle, setJobTitle] = useState(auth.user.jobTitle);
-  const [organisation, setOrganisation] = useState(auth.user.organisation);
-  const [promo, setPromo] = useState(`${auth.user.promo || ""}`);
-  const [alumni, setAlumni] = useState(auth.user.alumni);
-  const [professor, setProfessor] = useState(auth.user.professor);
+  const [desc, setDesc] = useState(auth?.user.description);
+  const [email, setEmail] = useState(auth?.user.email);
+  const [jobTitle, setJobTitle] = useState(auth?.user.jobTitle);
+  const [organisation, setOrganisation] = useState(auth?.user.organisation);
+  const [promo, setPromo] = useState(`${auth?.user.promo || ""}`);
+  const [alumni, setAlumni] = useState(auth?.user.alumni);
+  const [professor, setProfessor] = useState(auth?.user.professor);
   const [administration, setAdministration] = useState(
-    auth.user.administration
+    auth?.user.administration
   );
   const [password, setPassword] = useState("");
   const [confirmation, setConfirmation] = useState("");
@@ -35,7 +35,7 @@ const ProfileEditScreen = ({
 
   const onEditProfile = () => {
     updateUser({
-      ...auth.user,
+      ...auth?.user,
       description: desc,
       email,
       jobTitle,
