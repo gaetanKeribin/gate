@@ -19,7 +19,11 @@ const PeopleScreen = ({ navigation }) => {
         <Stack.Screen
           name="Read"
           component={PeopleReadScreen}
-          options={{ headerStatusBarHeight: 0, title: "" }}
+          options={{
+            headerStatusBarHeight: 0,
+            title: "",
+            headerStyle: { height: 40 },
+          }}
         />
       </Stack.Navigator>
     </View>

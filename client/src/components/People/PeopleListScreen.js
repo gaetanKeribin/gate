@@ -1,4 +1,4 @@
-import React, { useEffect } from "react";
+import React, { useEffect, useState } from "react";
 import { useDispatch, useSelector } from "react-redux";
 import {
   View,
@@ -6,12 +6,14 @@ import {
   ActivityIndicator,
   FlatList,
   TouchableOpacity,
+  Dimensions,
 } from "react-native";
 import { Avatar, Icon } from "react-native-elements";
 import theme from "../../Theme.json";
 import { fetchUsers } from "../../actions/usersActions";
 import _ from "lodash";
 import { apiConfig } from "../../config";
+import CustomInput from "../CustomInput";
 
 const Item = ({ item, navigation }) => {
   if (!item) return null;
@@ -23,13 +25,10 @@ const Item = ({ item, navigation }) => {
     >
       <View
         style={{
-          paddingTop: 8,
           paddingHorizontal: 20,
-          marginVertical: 4,
-          marginHorizontal: 0,
           borderBottomWidth: 1,
           borderBottomColor: theme.colors.grey4,
-          paddingVertical: 12,
+          paddingVertical: 16,
           flexDirection: "row",
         }}
       >
@@ -65,18 +64,26 @@ const Item = ({ item, navigation }) => {
           >
             {_.capitalize(item.firstname)} {_.capitalize(item.lastname)}
           </Text>
-          <View style={{ flexDirection: "row", flex: 1, alignItems: "center" }}>
-            <Icon name="account-card-details" size={20} />
-            <Text style={{ textAlignVertical: "bottom", marginStart: 8 }}>
-              {item.jobTitle} chez {item.organisation}
-            </Text>
-          </View>
-          <View style={{ flexDirection: "row", flex: 1, alignItems: "center" }}>
-            <Icon name="school" size={20} />
-            <Text style={{ textAlignVertical: "bottom", marginStart: 8 }}>
-              SIEE promotion {item.promo}
-            </Text>
-          </View>
+          {item.jobTitle && (
+            <View
+              style={{ flexDirection: "row", flex: 1, alignItems: "center" }}
+            >
+              <Icon name="account-card-details" size={20} />
+              <Text style={{ textAlignVertical: "bottom", marginStart: 8 }}>
+                {item.jobTitle} - {item.organisation}
+              </Text>
+            </View>
+          )}
+          {item.promo && (
+            <View
+              style={{ flexDirection: "row", flex: 1, alignItems: "center" }}
+            >
+              <Icon name="school" size={20} />
+              <Text style={{ textAlignVertical: "bottom", marginStart: 8 }}>
+                SIEE promotion {item.promo}
+              </Text>
+            </View>
+          )}
         </View>
       </View>
     </TouchableOpacity>
@@ -86,38 +93,91 @@ const Item = ({ item, navigation }) => {
 const PeopleScreen = ({ navigation }) => {
   const dispatch = useDispatch();
   const { users } = useSelector((state) => state);
+
   useEffect(() => {
     function fetchData() {
       dispatch(fetchUsers());
     }
     fetchData();
   }, []);
+  const [search, setSearch] = useState("");
+
+  const searchableKeys = [
+    "firstname",
+    "lastname",
+    "organisation",
+    "city",
+    "country",
+    "jobTitle",
+    "promo",
+  ];
+
+  const data = users?.users?.filter((u) => {
+    let a = false;
+    searchableKeys.every((sk, i) => {
+      if (`${u[sk]}`.toLowerCase().search(search.toLowerCase()) > -1) a = true;
+      if (a === true) return false;
+      else return true;
+    });
+    return a;
+  });
 
   return (
-    <View style={{ flex: 1 }}>
-      {users.isLoaded ? (
-        <FlatList
-          style={{
-            borderRadius: 0,
-            shadowOffset: { width: 10, height: 10 },
-            shadowColor: "black",
-            shadowOpacity: 0.3,
-            elevation: 2,
-            backgroundColor: "white",
-          }}
-          data={users.users}
-          renderItem={({ item }) => (
-            <Item item={item} navigation={navigation} />
-          )}
-          keyExtractor={(item) => item._id}
-        />
-      ) : (
+    <View style={{ flex: 1, flexDirection: "row" }}>
+      <View style={{ flex: 1 }} />
+      <View
+        style={{
+          width:
+            Dimensions.get("window").width < 500
+              ? Dimensions.get("window").width
+              : 500,
+        }}
+      >
         <View
-          style={{ flex: 1, alignContent: "center", justifyContent: "center" }}
+          style={{
+            padding: 8,
+            backgroundColor: "white",
+            borderColor: "lightgrey",
+            margin: 12,
+            borderRadius: 4,
+            borderWidth: 1,
+          }}
         >
-          <ActivityIndicator size="large" />
+          <CustomInput
+            onChangeText={setSearch}
+            placeholder="John, Doe, Paris, KPMG..."
+            value={search}
+            leftIcon="magnify"
+          />
         </View>
-      )}
+        {useSelector((state) => state.users.isLoaded) ? (
+          <FlatList
+            style={{
+              backgroundColor: "white",
+              borderColor: "lightgrey",
+              borderWidth: 1,
+              margin: 12,
+              borderRadius: 4,
+            }}
+            data={data}
+            renderItem={({ item }) => (
+              <Item item={item} navigation={navigation} />
+            )}
+            keyExtractor={(item) => item._id}
+          />
+        ) : (
+          <View
+            style={{
+              flex: 1,
+              alignContent: "center",
+              justifyContent: "center",
+            }}
+          >
+            <ActivityIndicator size="large" />
+          </View>
+        )}
+      </View>
+      <View style={{ flex: 1 }} />
     </View>
   );
 };

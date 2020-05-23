@@ -5,7 +5,6 @@
     "expo-web": "expo start -w",
     "expo-android": "concurrently -n 'emulator,expo' \"emulator -avd Pixel_3a_API_R --reset-cache\" \"expo start --android\"",
     "ios": "react-native run-ios",
-    "web": "export NODE_ENV=dev-web  & expo start --web",
     "start": "react-native start",
     "test": "jest"
   },

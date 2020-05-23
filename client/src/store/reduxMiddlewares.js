@@ -19,7 +19,7 @@ export const socketMiddleware = () => {
       action.type === "REQUEST_SIGN_UP:SUCCESS" ||
       action.type === "REQUEST_VERIFY_TOKEN:SUCCESS"
     ) {
-      const { token } = action.data;
+      const { token } = action.payload;
       socket = io(apiConfig.baseUrl, {
         forceNode: true,
         transportOptions: {
@@ -40,30 +40,13 @@ export const socketMiddleware = () => {
       socket.on("authenticated", (data) => {
         console.log("Socket authenticated");
       });
-      socket.on("private-conversation", (data) => {
+      socket.on("default", (data) => {
+        // {
+        //   type: "SOMETHING",
+        //   data: { conversation_id, message },
+        //   receivedAt,
+        // };
         store.dispatch({
-          type: "RECEIVE_PRIVATE_CONVERSATION",
-          ...data,
-          receivedAt: new Date(),
-        });
-      });
-      socket.on("private-conversation-ack", (data) => {
-        store.dispatch({
-          type: "PRIVATE_CONVERSATION_ACK",
-          ...data,
-          receivedAt: new Date(),
-        });
-      });
-      socket.on("private-message", (data) => {
-        store.dispatch({
-          type: "RECEIVE_PRIVATE_MESSAGE",
-          ...data,
-          receivedAt: new Date(),
-        });
-      });
-      socket.on("private-message-ack", (data) => {
-        store.dispatch({
-          type: "PRIVATE_MESSAGE_ACK",
           ...data,
           receivedAt: new Date(),
         });
@@ -146,7 +129,7 @@ export const axiosMiddleware = (store) => (next) => (action) => {
         }
         return store.dispatch({
           type: `${action.type}:SUCCESS`,
-          data: res.data,
+          payload: res.data,
           receivedAt: new Date(),
         });
       })

@@ -16,7 +16,7 @@ export default function (state = initialState, action) {
     case "REQUEST_AUTH_TOKEN":
       return {
         ...state,
-        ...action.data,
+        ...action.payload,
       };
     case "REQUEST_SIGN_UP":
       return {
@@ -71,7 +71,7 @@ export default function (state = initialState, action) {
         user: {
           ...state.user,
           privateConversations: [
-            ...state.user.privateConversations,
+            ...state.user.conversations,
             {
               conversation_id: action.conversation._id,
               interlocutor_id: action.message.sender,
@@ -85,7 +85,7 @@ export default function (state = initialState, action) {
         user: {
           ...state.user,
           privateConversations: [
-            ...state.user.privateConversations,
+            ...state.user.conversations,
             {
               conversation_id: action.conversation._id,
               interlocutor_id: action.message.recipient,
@@ -112,7 +112,7 @@ export default function (state = initialState, action) {
         isLoggedIn: true,
         loggedInAt: action.receivedAt,
         userInfoUpdatedAt: action.receivedAt,
-        ...action.data,
+        ...action.payload,
       };
     case "REQUEST_SIGN_UP:SUCCESS":
       return {
@@ -123,14 +123,14 @@ export default function (state = initialState, action) {
         loggedInAt: action.receivedAt,
         isLoggedIn: true,
         userInfoUpdatedAt: action.receivedAt,
-        ...action.data,
+        ...action.payload,
       };
     case "REQUEST_UPDATE_USER:SUCCESS":
       return {
         ...state,
         isUpdatingUser: false,
         userInfoUpdatedAt: action.receivedAt,
-        ...action.data,
+        ...action.payload,
       };
     case "REQUEST_MY_JOBS:SUCCESS":
       return {
@@ -138,12 +138,12 @@ export default function (state = initialState, action) {
         isFetching: false,
         lastUpdatedAt: action.receivedAt,
         isLoaded: true,
-        ...action.data,
+        ...action.payload,
       };
     case "REQUEST_UPDATE_JOB:SUCCESS":
       return {
         ...state,
-        user: { ...state.user, jobs: action.data.jobs },
+        user: { ...state.user, jobs: action.payload.jobs },
         isUpdatingJob: false,
       };
     case "REQUEST_CREATE_JOB:SUCCESS":
@@ -151,14 +151,14 @@ export default function (state = initialState, action) {
         ...state,
         user: {
           ...state.user,
-          jobs: [action.data.job, ...state.user.jobs],
+          jobs: [action.payload.job, ...state.user.jobs],
         },
       };
     case "REQUEST_DELETE_FILE:SUCCESS":
     case "REQUEST_UPLOAD_FILE:SUCCESS":
       return {
         ...state,
-        user: action.data.updatedUser,
+        user: action.payload.updatedUser,
       };
 
     // ERRORS

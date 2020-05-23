@@ -12,7 +12,7 @@ const AppNavbar = ({
   leftButton,
   title,
   logOut,
-  noRightButton
+  noRightButton,
 }) => {
   const { theme } = useContext(ThemeContext);
 
@@ -23,14 +23,14 @@ const AppNavbar = ({
           <Icon
             name="menu"
             onPress={() => navigation.openDrawer()}
-            color="white"
+            color={theme.colors.primary}
           />
         );
       case "back":
         return (
           <Icon
             name="arrow-left"
-            color="white"
+            color={theme.colors.primary}
             onPress={() => navigate("Main")}
           />
         );
@@ -39,7 +39,7 @@ const AppNavbar = ({
           <Icon
             name="menu"
             onPress={() => navigation.openDrawer()}
-            color="white"
+            color={theme.colors.primary}
           />
         );
     }
@@ -50,9 +50,9 @@ const AppNavbar = ({
       <View>
         <Text
           style={{
-            color: "white",
+            color: theme.colors.primary,
             fontSize: 20,
-            textAlign: "center"
+            textAlign: "center",
           }}
         >
           {title}
@@ -67,40 +67,44 @@ const AppNavbar = ({
     } else {
       return (
         <View>
-          <Icon name="logout" color="white" onPress={() => logOut()} />
+          <Icon
+            name="logout"
+            color={theme.colors.primary}
+            onPress={() => logOut()}
+          />
         </View>
       );
     }
   };
 
   return (
-    <LinearGradient
-      colors={[theme.colors.primary, theme.colors.secondary]}
-      start={[0.25, 1]}
-      end={[0.25, 0]}
+    <View
       style={{
         flexDirection: "row",
         justifyContent: "space-between",
         alignItems: "center",
         paddingTop: Platform.OS === "web" ? 10 : Constants.statusBarHeight,
         paddingHorizontal: 10,
-        paddingBottom: 8
+        paddingBottom: 8,
+        backgroundColor: "white",
+        borderBottomColor: "lightgrey",
+        borderBottomWidth: 1,
       }}
     >
       <LeftButtonComponent />
       <CenterComponent />
       <RightComponent />
-    </LinearGradient>
+    </View>
   );
 };
 
-const mapStateToProps = state => ({
-  auth: state.auth
+const mapStateToProps = (state) => ({
+  auth: state.auth,
 });
 
-const mapDispatchToProps = dispatch => {
+const mapDispatchToProps = (dispatch) => {
   return {
-    logOut: () => dispatch(logOut())
+    logOut: () => dispatch(logOut()),
   };
 };
 

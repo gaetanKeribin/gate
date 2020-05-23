@@ -2,29 +2,29 @@ const initialState = {
   users: [],
   isFetching: false,
   lastUpdatedAt: null,
-  isLoaded: false
+  isLoaded: false,
 };
 
-export default function(state = initialState, action) {
+export default function (state = initialState, action) {
   switch (action.type) {
     case "REQUEST_USERS":
       return {
         ...state,
-        isFetching: true
+        isFetching: true,
       };
     case "REQUEST_USERS:SUCCESS":
       return {
-        ...action.data,
+        ...action.payload,
         isFetching: false,
         lastUpdatedAt: action.receivedAt,
-        isLoaded: true
+        isLoaded: true,
       };
     case "REQUEST_USERS:ERROR":
       return {
-        ...action.data,
+        ...action.payload,
         isFetching: false,
         lastUpdatedAt: action.receivedAt,
-        isLoaded: true
+        isLoaded: true,
       };
     case "REQUEST_LOG_OUT:SUCCESS":
       return initialState;

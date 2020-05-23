@@ -2,15 +2,15 @@ const initialState = {
   jobs: [],
   isFetching: false,
   lastUpdatedAt: null,
-  isLoaded: false
+  isLoaded: false,
 };
 
-export default function(state = initialState, action) {
+export default function (state = initialState, action) {
   switch (action.type) {
     case "REQUEST_JOBS":
       return {
         ...state,
-        isFetching: true
+        isFetching: true,
       };
     case "REQUEST_JOBS:SUCCESS":
       return {
@@ -18,35 +18,35 @@ export default function(state = initialState, action) {
         isFetching: false,
         lastUpdatedAt: action.receivedAt,
         isLoaded: true,
-        ...action.data
+        ...action.payload,
       };
     case "REQUEST_JOBS:ERROR":
       return {
         ...state,
         isFetching: false,
         lastUpdatedAt: action.receivedAt,
-        isLoaded: true
+        isLoaded: true,
       };
     case "REQUEST_DELETE_JOB":
       return {
         ...state,
-        isDeleting: true
+        isDeleting: true,
       };
     case "REQUEST_DELETE_JOB:SUCCESS":
       return {
         ...state,
         isDeleting: false,
-        lastUpdatedAt: action.receivedAt
+        lastUpdatedAt: action.receivedAt,
       };
     case "REQUEST_CREATE_JOB:SUCCESS":
       return {
         ...state,
-        jobs: [action.data.job, ...state.jobs]
+        jobs: [action.payload.job, ...state.jobs],
       };
     case "REQUEST_DELETE_JOB:ERROR":
       return {
         ...state,
-        isFetchingConversations: false
+        isFetchingConversations: false,
       };
     case "REQUEST_LOG_OUT:SUCCESS":
       return initialState;

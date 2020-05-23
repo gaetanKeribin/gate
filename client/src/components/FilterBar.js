@@ -1,10 +1,11 @@
 import React, { useState, useContext } from "react";
 import { View, Text, SectionList, TouchableOpacity } from "react-native";
 import { ThemeContext, SearchBar, Icon } from "react-native-elements";
+import CustomInput from "./CustomInput";
 
 const SearchResultItem = ({ item, theme }) => {
   return (
-    <TouchableOpacity onPress={{}}>
+    <TouchableOpacity onPress={() => setFilter()}>
       <View
         style={{
           flexDirection: "row",
@@ -24,35 +25,13 @@ const SearchResultItem = ({ item, theme }) => {
   );
 };
 
-const FilterBar = ({ data, keys }) => {
+const FilterBar = ({ data, keys, setFilter }) => {
   const { theme } = useContext(ThemeContext);
   const [search, setSearch] = useState("");
 
-  const searchProcess = () => {
-    const resultsObj = {};
-    keys.forEach((key) => {
-      const name = key.name + "/" + key.alias + "/" + key.icon;
-      resultsObj[name] = {};
-      data.forEach((element) => {
-        const value = element[key.name];
-        if (value.includes(search.toLowerCase())) {
-          if (!resultsObj[name][value]) resultsObj[name][value] = 0;
-          resultsObj[name][value] = resultsObj[name][value] + 1;
-        }
-      });
-      if (Object.keys(resultsObj[name]).length === 0) delete resultsObj[name];
-    });
-    const resultsArr = [];
-    Object.keys(resultsObj).forEach((key) => {
-      let temp = { title: key, data: [] };
-      Object.keys(resultsObj[key]).forEach((value) => {
-        temp.data.push({ value, occurence: resultsObj[key][value] });
-      });
-      temp.data.length !== 0 && resultsArr.push(temp);
-    });
-    return resultsArr;
-  };
-  const results = searchProcess();
+  const [suggestions, setSuggestions] = useState([]);
+
+  setSuggestions(data.filter((d) => d.value.search(search) > -1));
 
   return (
     <View
@@ -64,20 +43,13 @@ const FilterBar = ({ data, keys }) => {
         elevation: 2,
         marginBottom: 10,
         backgroundColor: "white",
-        // paddingHorizontal: 8
       }}
     >
-      <SearchBar
-        placeholder={`Chercher une ville, une profession...`}
+      <CustomInput
+        searchIn={data} // [{key: "lastname", value: "doe" }]
+        placeholder="promo 18, Doe, KPMG..."
+        value={seach}
         onChangeText={setSearch}
-        value={search}
-        lightTheme={true}
-        platform="android"
-        containerStyle={{
-          paddingTop: 0,
-          height: 40,
-          // flex: 1
-        }}
       />
       {search !== "" && (
         <SectionList

@@ -120,11 +120,11 @@ const DrawerStack = () => {
 const AppStack = (props) => {
   const [isLoadingComplete, setLoadingComplete] = React.useState(false);
   const [initialNavigationState, setInitialNavigationState] = React.useState();
-  const containerRef = React.useRef();
   const { getInitialState } = useLinking(navigationRef);
   const dispatch = useDispatch();
 
-  const userToken = useSelector((state) => state.auth.token, shallowEqual);
+  const userToken = useSelector((state) => state.auth.token);
+  console.log("AppStack -> userToken", userToken);
 
   React.useEffect(() => {
     async function loadResourcesAndDataAsync() {
@@ -151,12 +151,7 @@ const AppStack = (props) => {
     return null;
   } else {
     return (
-      <View
-        style={{
-          maxWidth: 500,
-          flex: 1,
-        }}
-      >
+      <View style={{ flex: 1 }}>
         <NavigationContainer
           ref={navigationRef}
           initialState={initialNavigationState}

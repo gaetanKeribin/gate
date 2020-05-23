@@ -8,75 +8,76 @@ const initialState = {
   isFetchingConversation: false,
 };
 
+import _ from "lodash";
+
+const copyAndUpdate = (array, i, update) => {
+  let copy = [];
+
+  if (i > 0) copy.concat(array.slice(0, index));
+  copy.concat({ ...array[index], ...update });
+  copy.concat(index + 1);
+
+  return copy;
+};
+
 export default function (state = initialState, action) {
+  let i = _.findIndex(state.conversations, {
+    _id: action.payload?.conversation_id,
+  });
+
   switch (action.type) {
     case "REQUEST_CONVERSATIONS:SUCCESS":
       return {
         ...state,
         lastUpdatedAt: action.receivedAt,
+        conversations: action.payload.conversations,
         isLoaded: true,
-        isFetchingConversations: false,
-        ...action.data,
       };
     case "REQUEST_CONVERSATION:SUCCESS":
       return {
         ...state,
-        conversations: [
-          action.data,
-          ...state.conversations.filter((c) => c._id !== action.data._id),
-        ],
+        conversations: copyAndUpdate(
+          state.conversations,
+          i,
+          action.payload.conversation
+        ),
         lastUpdatedAt: action.receivedAt,
         isLoaded: true,
       };
-    case "PRIVATE_CONVERSATION_ACK":
+    case "RECEIVE_READ_ACK":
+      return {
+        ...state,
+        lastUpdatedAt: action.receivedAt,
+        conversations: copyAndUpdate(state.conversations, i, {
+          readAck: action.payload.reacAck,
+        }),
+        isLoaded: true,
+      };
+    case "RECEIVE_WRITING_ACK":
+      return {
+        ...state,
+        lastUpdatedAt: action.receivedAt,
+        conversations: copyAndUpdate(state.conversations, i, {
+          writing: action.payload.writing,
+        }),
+      };
     case "RECEIVE_NEW_CONVERSATION":
       return {
         ...state,
-        conversations: [action.conversation, ...state.conversations],
+        conversations: [action.payload.conversation, ...state.conversations],
         lastUpdatedAt: action.receivedAt,
       };
-    case "PRIVATE_MESSAGE_ACK":
-    case "RECEIVE_PRIVATE_MESSAGE":
-      let i = state.conversations
-        .map(function (c) {
-          return c._id;
-        })
-        .indexOf(action.message.conversation_id);
-
-      if (state.conversations[i].messages) {
-        return {
-          ...state,
-          lastUpdatedAt: action.receivedAt,
-          conversations: [
-            {
-              ...state.conversations[i],
-              lastMessage: action.message,
-              messages: [action.message, ...state.conversations[i].messages],
-            },
-            ...state.conversations.filter(
-              (conv) => conv._id !== action.message.conversation_id
-            ),
-          ],
-          isLoaded: true,
-        };
-      } else {
-        return {
-          ...state,
-          lastUpdatedAt: action.receivedAt,
-          conversations: [
-            {
-              ...state.conversations[i],
-              lastMessage: action.message,
-              messages: [action.message],
-            },
-            ...state.conversations.filter(
-              (conv) => conv._id !== action.message.conversation_id
-            ),
-          ],
-          isLoaded: true,
-        };
-      }
-
+    case "RECEIVE_NEW_MESSAGE":
+      return {
+        ...state,
+        lastUpdatedAt: action.receivedAt,
+        conversations: copyAndUpdate(state.conversations, i, {
+          lastMessage: action.message,
+          messages: Array.isArray(state.conversations[i].messages)
+            ? [action.message, ...state.conversations[i].messages]
+            : [action.message],
+        }),
+      };
     case "REQUEST_LOG_OUT:SUCCESS":
       return initialState;
     default:

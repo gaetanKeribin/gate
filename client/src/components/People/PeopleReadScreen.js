@@ -6,7 +6,7 @@ import { LinearGradient } from "expo-linear-gradient";
 import theme from "../../Theme.json";
 import _ from "lodash";
 import { showOverlay } from "../../actions/overlayAction";
-import { startPrivateConversation } from "../../actions/chatActions";
+import { startConversation } from "../../actions/chatActions";
 import { apiConfig } from "../../config";
 
 const PeopleScreen = ({ route, navigation }) => {
@@ -25,7 +25,6 @@ const PeopleScreen = ({ route, navigation }) => {
         alignContent: "space-between",
         paddingVertical: 10,
         paddingHorizontal: 8,
-        backgroundColor: "white",
       }}
     >
       <ScrollView
@@ -158,7 +157,7 @@ const PeopleScreen = ({ route, navigation }) => {
           <Button
             title="Contacter"
             onPress={() => {
-              let a = auth?.user.privateConversations.filter(
+              let a = auth?.user.conversations.filter(
                 (c) => c.interlocutor_id == item._id
               );
               if (a.length > 0) {
@@ -173,7 +172,7 @@ const PeopleScreen = ({ route, navigation }) => {
                 dispatch(
                   showOverlay({
                     form: {
-                      action: startPrivateConversation,
+                      action: startConversation,
                       inputName: "text",
                       actionParams: { recipient: item._id },
                       message:

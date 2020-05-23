@@ -26,7 +26,6 @@ export const signUp = (credentials) => {
     successNotification: {
       message: `Bienvenue ! Rendez-vous à l'onglet "Mon profil" pour éditer vos informations.`,
       variant: "success",
-      redirect: "Root",
     },
     errorNotification: true,
   };

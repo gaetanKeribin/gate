@@ -11,10 +11,13 @@ import { ThemeContext, Button, Icon } from "react-native-elements";
 import {
   sendPrivateMessage,
   fetchConversation,
+  sendReadAck,
 } from "../../actions/chatActions";
 import _ from "lodash";
+import "moment/locale/fr";
+import moment from "moment";
 
-const Message = ({ message, incoming, theme }) => {
+const Message = ({ message, incoming, theme, i, readAck }) => {
   return (
     <View
       style={{
@@ -37,6 +40,7 @@ const Message = ({ message, incoming, theme }) => {
         }}
       >
         <Text
+          selectable
           style={{
             color: !incoming ? "white" : "black",
             textAlign: incoming ? "left" : "right",
@@ -44,6 +48,11 @@ const Message = ({ message, incoming, theme }) => {
         >
           {message.text}
         </Text>
+        {readAck.message_id === item._id && (
+          <Text>
+            Lu il y a {moment(readAck.timestamp).locale("fr").fromNow()}
+          </Text>
+        )}
       </View>
       {incoming && <View style={{ flex: 1 }}></View>}
     </View>
@@ -65,6 +74,8 @@ const RoomScreen = ({ route }) => {
   useEffect(() => {
     function fetchData() {
       dispatch(fetchConversation(conversation_id));
+      if (conversation.lastMessage.read === false)
+        dispatch(sendReadAck(conversation_id));
     }
     fetchData();
   }, []);
@@ -83,16 +94,20 @@ const RoomScreen = ({ route }) => {
     setNewMessage("");
   };
 
+  // is something triggered from here when reveiving a message that isn't triggered outside of this screen
+
   return (
     <View style={{ flex: 1, justifyContent: "space-between" }}>
       {conversation?.messages ? (
         <FlatList
           data={conversation.messages}
-          renderItem={({ item }) => (
+          renderItem={({ item }, i) => (
             <Message
+              i={i}
               message={item}
               incoming={item?.sender !== user._id}
               theme={theme}
+              readAck={conversation.readAck}
             />
           )}
           keyExtractor={(item) => item?._id}
@@ -101,39 +116,46 @@ const RoomScreen = ({ route }) => {
       ) : (
         <ActivityIndicator />
       )}
-      <View
-        style={{
-          flexDirection: "row",
-          backgroundColor: "white",
-          paddingVertical: 8,
-          paddingHorizontal: 16,
-          alignItems: "center",
-          justifyContent: "center",
-          alignContent: "center",
-        }}
-      >
-        <TextInput
+      <View>
+        {conversation.read && conversation.lastMessage.sender !== user._id && (
+          <Text style={{ flex: 1, textAlign: "right" }}>
+            Vu à {conversation.read.sentAt}
+          </Text>
+        )}
+        <View
           style={{
-            height: 40,
-            flex: 1,
+            flexDirection: "row",
+            backgroundColor: "white",
+            paddingVertical: 8,
+            paddingHorizontal: 16,
+            alignItems: "center",
+            justifyContent: "center",
+            alignContent: "center",
           }}
-          onChangeText={(text) => setNewMessage(text)}
-          value={newMessage}
-          multiline
-          placeholder="Ecrivez votre message ici."
-        />
-        <Button
-          icon={
-            <Icon
-              name="send"
-              size={20}
-              color={newMessage ? theme.colors.primary : theme.colors.grey2}
-            />
-          }
-          disabled={!newMessage}
-          type="clear"
-          onPress={() => onSendMessage()}
-        />
+        >
+          <TextInput
+            style={{
+              height: 40,
+              flex: 1,
+            }}
+            onChangeText={(text) => setNewMessage(text)}
+            value={newMessage}
+            multiline
+            placeholder="Ecrivez votre message ici."
+          />
+          <Button
+            icon={
+              <Icon
+                name="send"
+                size={20}
+                color={newMessage ? theme.colors.primary : theme.colors.grey2}
+              />
+            }
+            disabled={!newMessage}
+            type="clear"
+            onPress={() => onSendMessage()}
+          />
+        </View>
       </View>
     </View>
   );

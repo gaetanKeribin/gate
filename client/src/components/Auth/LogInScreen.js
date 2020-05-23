@@ -76,7 +76,6 @@ const logInScreen = ({ auth, logIn, navigation }) => {
       <Button
         title="Se connecter"
         onPress={handleLogIn}
-        loading={auth.isLoggingIn}
         containerStyle={{ marginBottom: 20, marginTop: 8 }}
       />
       <Button

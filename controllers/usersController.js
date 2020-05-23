@@ -29,7 +29,7 @@ exports.removeSocketFromUser = async function (socket) {
 
 exports.findSocketsFromUserIds = async function (data) {
   try {
-    if (typeof data === "Array") {
+    if (Array.isArray(data)) {
       const sockets = [];
       const users = await User.find({ _id: { $in: data } }).select(
         "sockets -_id"

@@ -94,7 +94,7 @@ const userSchema = new mongoose.Schema({
     ref: "avatar.files",
   },
   jobs: [{ type: mongoose.Schema.Types.ObjectId, ref: "Job" }],
-  privateConversations: [
+  conversations: [
     {
       conversation_id: {
         type: mongoose.Schema.Types.ObjectId,

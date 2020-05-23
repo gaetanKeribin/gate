@@ -9,10 +9,21 @@ export const sendPrivateMessage = (message) => {
   };
 };
 
-export const startPrivateConversation = (message) => {
+export const sendReadAck = (conversation_id) => {
   return {
     type: "SOCKET",
-    event: "private-conversation",
+    event: "read-ack",
+    payload: {
+      conversation_id,
+      sentAt: new Date(),
+    },
+  };
+};
+
+export const startConversation = (message) => {
+  return {
+    type: "SOCKET",
+    event: "new-conversation",
     payload: {
       ...message,
       sentAt: new Date(),
