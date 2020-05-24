@@ -19,7 +19,7 @@ const CustomOverlay = () => {
 
   const dispatchRedirectReset = () => {
     dispatch(resetOverlay());
-    typeof overlay.callbacks === "array" &&
+    Array.isArray(overlay.callbacks) &&
       overlay.callbacks.forEach((d) => {
         dispatch(d());
       });

@@ -4,7 +4,6 @@ import { connect } from "react-redux";
 import { logOut } from "../actions/authActions";
 import { View, Text, Platform } from "react-native";
 import Constants from "expo-constants";
-import { LinearGradient } from "expo-linear-gradient";
 import { navigate } from "../RootNavigation";
 
 const AppNavbar = ({
@@ -66,10 +65,11 @@ const AppNavbar = ({
       return <View></View>;
     } else {
       return (
-        <View>
+        <View style={{ flexDirection: "row" }}>
           <Icon
             name="logout"
-            color={theme.colors.primary}
+            color={theme.colors.grey0}
+            containerStyle={{ marginHorizontal: 8 }}
             onPress={() => logOut()}
           />
         </View>
