@@ -1,31 +1,24 @@
-import React, { useState, useEffect, useCallback } from "react";
-import { connect } from "react-redux";
+import React from "react";
 import "moment/locale/fr";
 import moment from "moment";
 import _ from "lodash";
-import { View, Text, ScrollView } from "react-native";
+import {
+  View,
+  Text,
+  ScrollView,
+  StyleSheet,
+  Dimensions,
+  TouchableOpacity,
+} from "react-native";
 import { Icon } from "react-native-elements";
 import theme from "../../Theme.json";
-import { fetchJobs } from "../../actions/jobsActions";
 
-const JobsReadScreen = ({ route }) => {
+const JobsReadScreen = ({ route, navigation }) => {
   const { job } = route.params;
   return (
-    <View
-      style={{
-        flex: 1,
-        alignContent: "space-between",
-        paddingVertical: 10,
-        paddingHorizontal: 8,
-        backgroundColor: "white",
-      }}
-    >
-      <ScrollView
-        style={{
-          flex: 1,
-          paddingHorizontal: 12,
-        }}
-      >
+    <View style={styles.container}>
+      <ScrollView style={{ flex: 1 }}>
+        <Text style={styles.title}>{route.params.job.jobTitle}</Text>
         <View style={{ alignItems: "flex-end" }}>
           <Text
             style={{
@@ -94,19 +87,43 @@ const JobsReadScreen = ({ route }) => {
         </Text>
         <Text>{job.contact}</Text>
       </ScrollView>
+      <View style={styles.actionMenu}>
+        <TouchableOpacity
+          onPress={navigation.goBack}
+          containerStyle={styles.actionButton}
+        >
+          <Icon name="arrow-left" size={20} color="white" />
+        </TouchableOpacity>
+      </View>
     </View>
   );
 };
 
-const mapStateToProps = (state) => ({
-  auth: state.auth,
-  jobs: state.jobs,
+export default JobsReadScreen;
+
+const styles = StyleSheet.create({
+  container: {
+    minWidth:
+      Dimensions.get("window").width < 500
+        ? Dimensions.get("window").width
+        : 500,
+    maxWidth: 1000,
+    alignSelf: "center",
+  },
+  actionMenu: {
+    borderRadius: 50,
+    shadowColor: "black",
+    shadowOffset: { width: 0, height: 0 },
+    shadowOpacity: 0.5,
+    shadowRadius: 12,
+    position: "absolute",
+    opacity: 0.8,
+    alignSelf: "center",
+    flexDirection: "row",
+    top: 8,
+  },
+  actionButton: { margin: 8 },
+  title: {
+    fontSize: 20,
+  },
 });
-
-const mapDispatchToProps = (dispatch) => {
-  return {
-    fetchJobs: () => dispatch(fetchJobs()),
-  };
-};
-
-export default connect(mapStateToProps, mapDispatchToProps)(JobsReadScreen);

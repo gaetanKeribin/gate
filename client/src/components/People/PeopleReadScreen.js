@@ -1,6 +1,6 @@
 import React from "react";
 import { useDispatch, useSelector } from "react-redux";
-import { View, Text, ScrollView } from "react-native";
+import { View, Text, ScrollView, StyleSheet, Dimensions } from "react-native";
 import { Avatar, Divider, Icon, Button } from "react-native-elements";
 import { LinearGradient } from "expo-linear-gradient";
 import theme from "../../Theme.json";
@@ -8,8 +8,9 @@ import _ from "lodash";
 import { showOverlay } from "../../actions/overlayAction";
 import { startConversation } from "../../actions/chatActions";
 import { apiConfig } from "../../config";
+import { TouchableOpacity } from "react-native-gesture-handler";
 
-const PeopleScreen = ({ route, navigation }) => {
+const PeopleReadScreen = ({ route, navigation }) => {
   const { auth } = useSelector((state) => state);
   const dispatch = useDispatch();
   const { item } = route.params;
@@ -19,19 +20,8 @@ const PeopleScreen = ({ route, navigation }) => {
   if (!item) return null;
 
   return (
-    <View
-      style={{
-        flex: 1,
-        alignContent: "space-between",
-        paddingVertical: 10,
-        paddingHorizontal: 8,
-      }}
-    >
-      <ScrollView
-        style={{
-          flex: 1,
-        }}
-      >
+    <View style={styles.container}>
+      <ScrollView style={{ flex: 1 }}>
         <LinearGradient
           colors={[theme.colors.primary, theme.colors.secondary]}
           start={[0.25, 1]}
@@ -152,10 +142,16 @@ const PeopleScreen = ({ route, navigation }) => {
           </Text>
         </View>
       </ScrollView>
-      {item._id !== auth.user._id && (
-        <View>
-          <Button
-            title="Contacter"
+      <View style={styles.actionMenu}>
+        <TouchableOpacity
+          onPress={navigation.goBack}
+          containerStyle={styles.actionButton}
+        >
+          <Icon name="arrow-left" size={20} color="white" />
+        </TouchableOpacity>
+        {item._id !== auth.user._id && (
+          <TouchableOpacity
+            containerStyle={{ margin: 8 }}
             onPress={() => {
               let a = auth?.user.conversations.filter(
                 (c) => c.interlocutor_id == item._id
@@ -185,11 +181,37 @@ const PeopleScreen = ({ route, navigation }) => {
                   })
                 );
             }}
-          />
-        </View>
-      )}
+          >
+            <Icon name="message-outline" color="white" />
+          </TouchableOpacity>
+        )}
+      </View>
     </View>
   );
 };
 
-export default PeopleScreen;
+export default PeopleReadScreen;
+
+const styles = StyleSheet.create({
+  container: {
+    minWidth:
+      Dimensions.get("window").width < 500
+        ? Dimensions.get("window").width
+        : 500,
+    maxWidth: 1000,
+    alignSelf: "center",
+  },
+  actionMenu: {
+    borderRadius: 50,
+    shadowColor: "black",
+    shadowOffset: { width: 0, height: 0 },
+    shadowOpacity: 0.5,
+    shadowRadius: 12,
+    position: "absolute",
+    opacity: 0.8,
+    alignSelf: "center",
+    flexDirection: "row",
+    top: 8,
+  },
+  actionButton: { margin: 8 },
+});

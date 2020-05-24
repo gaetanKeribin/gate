@@ -7,6 +7,7 @@ import {
   FlatList,
   TouchableOpacity,
   Dimensions,
+  StyleSheet,
 } from "react-native";
 import { Avatar, Icon } from "react-native-elements";
 import theme from "../../Theme.json";
@@ -133,16 +134,7 @@ const PeopleScreen = ({ navigation }) => {
               : 500,
         }}
       >
-        <View
-          style={{
-            padding: 8,
-            backgroundColor: "white",
-            borderColor: "lightgrey",
-            margin: 12,
-            borderRadius: 4,
-            borderWidth: 1,
-          }}
-        >
+        <View style={styles.searchBarContainer}>
           <CustomInput
             onChangeText={setSearch}
             placeholder="John, Doe, Paris, KPMG..."
@@ -152,13 +144,7 @@ const PeopleScreen = ({ navigation }) => {
         </View>
         {useSelector((state) => state.users.isLoaded) ? (
           <FlatList
-            style={{
-              backgroundColor: "white",
-              borderColor: "lightgrey",
-              borderWidth: 1,
-              margin: 12,
-              borderRadius: 4,
-            }}
+            style={styles.FlatList}
             data={data}
             renderItem={({ item }) => (
               <Item item={item} navigation={navigation} />
@@ -183,3 +169,28 @@ const PeopleScreen = ({ navigation }) => {
 };
 
 export default PeopleScreen;
+
+const styles = StyleSheet.create({
+  container: {
+    minWidth:
+      Dimensions.get("window").width < 500
+        ? Dimensions.get("window").width
+        : 500,
+    maxWidth: 1000,
+  },
+  searchBarContainer: {
+    padding: 8,
+    backgroundColor: "white",
+    borderColor: "lightgrey",
+    margin: 12,
+    borderRadius: 4,
+    borderWidth: 1,
+  },
+  FlatList: {
+    backgroundColor: "white",
+    borderColor: "lightgrey",
+    borderWidth: 1,
+    margin: 12,
+    borderRadius: 4,
+  },
+});

@@ -9,6 +9,7 @@ import { TouchableOpacity } from "react-native-gesture-handler";
 import SearchBar from "./SearchBar";
 import DateInput from "./DateInput";
 import Notification from "./Notification";
+import SmallForm from "./SmallForm";
 import Menu from "./Menu";
 
 const CustomOverlay = () => {
@@ -67,7 +68,7 @@ const CustomOverlay = () => {
           />
         )}
         {overlay.form && (
-          <InputForm
+          <SmallForm
             form={overlay.form}
             dispatchRedirectReset={dispatchRedirectReset}
             dispatch={dispatch}

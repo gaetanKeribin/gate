@@ -45,5 +45,14 @@
       "borderRadius": 12,
       "paddingVertical": 16
     }
+  },
+  "TextInput": {
+    "borderWidth": 1,
+    "borderRadius": 5,
+    "height": 40,
+    "paddingHorizontal": 4,
+    "paddingVertical": 4,
+    "borderColor": "rgba(200, 200, 200, 1)",
+    "backgroundColor": "rgba(245, 245, 245, 1)"
   }
 }
