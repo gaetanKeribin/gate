@@ -24,6 +24,7 @@ const port = process.env.PORT || 8080;
 require("./config/mongoose");
 app.use(require("method-override")("X-HTTP-Method-Override"));
 app.use(express.json());
+app.use(require("cors")());
 
 app.use("/api/users", usersRouter);
 app.use("/api/jobs", jobsRouter);
