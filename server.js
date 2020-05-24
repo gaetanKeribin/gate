@@ -22,7 +22,6 @@ const app = express();
 const port = process.env.PORT || 8080;
 
 require("./config/mongoose");
-app.use(require("cors")());
 app.use(require("method-override")("X-HTTP-Method-Override"));
 app.use(express.json());
 
@@ -161,10 +160,8 @@ io.on("connection", async function (socket) {
   });
 });
 
-app.use(express.static("client/web-build"));
-
 // Website server
-if (process.env.NODE_ENV === "test") {
+if (["test", "production"].includes(process.env.NODE_ENV)) {
   app.use(express.static("client/web-build"));
 }
 
